@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class CreateForeignKeys extends Migration {
 
@@ -43,16 +44,7 @@ class CreateForeignKeys extends Migration {
 						->onDelete('restrict')
 						->onUpdate('restrict');
 		});
-		Schema::table('sale_items', function(Blueprint $table) {
-			$table->foreign('sale_id')->references('id')->on('sales')
-						->onDelete('cascade')
-						->onUpdate('cascade');
-		});
-		Schema::table('sale_items', function(Blueprint $table) {
-			$table->foreign('item_id')->references('id')->on('items')
-						->onDelete('no action')
-						->onUpdate('no action');
-		});
+		
 		Schema::table('returns', function(Blueprint $table) {
 			$table->foreign('sale_id')->references('id')->on('sales')
 						->onDelete('restrict')
@@ -68,16 +60,7 @@ class CreateForeignKeys extends Migration {
 						->onDelete('restrict')
 						->onUpdate('restrict');
 		});
-		Schema::table('return_items', function(Blueprint $table) {
-			$table->foreign('return_id')->references('id')->on('returns')
-						->onDelete('cascade')
-						->onUpdate('cascade');
-		});
-		Schema::table('return_items', function(Blueprint $table) {
-			$table->foreign('item_id')->references('id')->on('items')
-						->onDelete('cascade')
-						->onUpdate('cascade');
-		});
+		
 		Schema::table('orders', function(Blueprint $table) {
 			$table->foreign('client_id')->references('id')->on('clients')
 						->onDelete('restrict')
@@ -128,12 +111,7 @@ class CreateForeignKeys extends Migration {
 		Schema::table('safe_transactions', function(Blueprint $table) {
 			$table->dropForeign('safe_transactions_user_id_foreign');
 		});
-		Schema::table('sale_items', function(Blueprint $table) {
-			$table->dropForeign('sale_items_sale_id_foreign');
-		});
-		Schema::table('sale_items', function(Blueprint $table) {
-			$table->dropForeign('sale_items_item_id_foreign');
-		});
+		
 		Schema::table('returns', function(Blueprint $table) {
 			$table->dropForeign('returns_sale_id_foreign');
 		});
@@ -143,12 +121,7 @@ class CreateForeignKeys extends Migration {
 		Schema::table('returns', function(Blueprint $table) {
 			$table->dropForeign('returns_user_id_foreign');
 		});
-		Schema::table('return_items', function(Blueprint $table) {
-			$table->dropForeign('return_items_return_id_foreign');
-		});
-		Schema::table('return_items', function(Blueprint $table) {
-			$table->dropForeign('return_items_item_id_foreign');
-		});
+		
 		Schema::table('orders', function(Blueprint $table) {
 			$table->dropForeign('orders_client_id_foreign');
 		});

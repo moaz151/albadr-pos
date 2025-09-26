@@ -11,10 +11,7 @@ class Sale extends Model
     public $timestamps = true;
     protected $fillable = array('total', 'discount', 'discount_type', 'shipping_cost', 'net_amount', 'paid_amount', 'remaining_amount', 'invoice_number', 'payment_type');
 
-    public function items()
-    {
-        return $this->belongsToMany('App\Models\Item', 'sale_items')->withPivot('unit_price', 'quantity', 'total_price');
-    }
+   
 
     public function safeTransaction()
     {

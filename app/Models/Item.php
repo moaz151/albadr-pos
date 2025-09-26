@@ -43,7 +43,7 @@ class Item extends Model
 
     public function returns()
     {
-        return $this->morphedByMany('App\Models\Return', 'itemable');
+        return $this->morphedByMany('App\Models\SaleReturn', 'itemable');
     }
 
     public function orders()
