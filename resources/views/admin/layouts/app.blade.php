@@ -7,7 +7,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Starter</title>
+  <title>{{ config('app.name') }} | Dashboard</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -15,13 +15,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('adminlte') }}/css/adminlte.min.css">
+  <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/sweetalert2/sweetalert2.min.css">
+{{-- form Chat --}}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- form Chat --}}
+  @stack('js')
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
 
 
-@include('layouts.partials._nave')
-@include('layouts.partials._sidebar')
+@include('admin.layouts.partials._nave')
+@include('admin.layouts.partials._sidebar')
   
 
   <!-- Content Wrapper. Contains page content -->
@@ -74,7 +80,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ asset('adminlte') }}/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('adminlte') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
 <!-- AdminLTE App -->
 <script src="{{ asset('adminlte') }}/js/adminlte.min.js"></script>
+{{-- @stack('js') --}}
+<script src="{{ asset('adminlte') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
+@stack('js')
 </body>
 </html>

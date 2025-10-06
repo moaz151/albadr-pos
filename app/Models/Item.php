@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\ItemStatusEnum;
 
 class Item extends Model 
 {
@@ -14,16 +15,14 @@ class Item extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
-    protected $fillable = array('name', 'item_code', 'description', 'price', 'quantity', 'is_shown_in_store', 'minimum_stock');
+    protected $fillable = array('name', 'item_code','category_id', 'unit_id' , 'description', 'price', 'quantity', 'status', 'minimum_stock');
+    protected $casts = [
+        'status' => ItemStatusEnum::class,
+    ];
 
     public function unit()
     {
         return $this->belongsTo('App\Models\Unit');
-    }
-
-    public function sales()
-    {
-        return $this->belongsToMany('App\Models\Sale');
     }
 
     public function category()

@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\CatStatusEnum;
 
 class Category extends Model 
 {
-
+    use HasFactory;
     protected $table = 'categories';
     public $timestamps = true;
-    protected $fillable = array('name', 'status');
+    protected $fillable = ['name', 'status'];
 
     public function items()
     {
@@ -19,6 +21,13 @@ class Category extends Model
     public function photo()
     {
         return $this->morphOne('App\Models\File', 'fileable')->where('usage', 'category_photo');
+    }
+
+    public function casts(): array
+    {
+        return ([
+            'status' => CatStatusEnum::class,
+            ]) ;
     }
 
 }

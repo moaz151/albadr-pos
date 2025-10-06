@@ -19,7 +19,7 @@ class CreateItemsTable extends Migration {
 			$table->decimal('quantity');
 			$table->bigInteger('category_id')->unsigned();
 			$table->bigInteger('unit_id')->unsigned();
-			$table->boolean('is_shown_in_store');
+			$table->integer('status');
 			$table->decimal('minimum_stock');
 		});
 	}
