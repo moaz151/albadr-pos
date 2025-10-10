@@ -9,6 +9,6 @@ class Safe extends Model
 
     protected $table = 'safes';
     public $timestamps = true;
-    protected $fillable = array('name', 'description');
+    protected $fillable = array('name', 'balance', 'status', 'description', 'type');
 
 }

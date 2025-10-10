@@ -14,15 +14,14 @@ class CategoriesSeeder extends Seeder
      */
     public function run(): void
     {
-        Category::UpdateOrcreate([
-            'name' => 'Default Category Name'
-        ],
-        [
-            'name' => 'Default Category Name',
-            'status' => CatStatusEnum::active->value // or any default status you want
-        ]);
-
-        Category::factory(30)->create();
-        
+        for ($i = 1; $i <= 10; $i++) {
+            Category::updateOrCreate([
+                'name' => 'Category ' . $i,
+                ],
+                [
+                    'name' => 'Category ' . $i,
+                    'status' => CatStatusEnum::active,
+                ]);
+        }
     }
 }

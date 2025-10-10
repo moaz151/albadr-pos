@@ -2,20 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\ItemStatusEnum;
 
 class Item extends Model 
 {
-
+    Use HasFactory;
     protected $table = 'items';
     public $timestamps = true;
 
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
-    protected $fillable = array('name', 'item_code','category_id', 'unit_id' , 'description', 'price', 'quantity', 'status', 'minimum_stock');
+    protected $fillable = array(
+        'name', 'item_code','category_id', 'unit_id' , 'description', 'price', 'quantity', 'status', 'minimum_stock'
+    );
     protected $casts = [
         'status' => ItemStatusEnum::class,
     ];

@@ -14,6 +14,15 @@
       <div class="card-body">
         <form method="POST" action="{{ route('admin.items.store') }}" id="main-form">
           @csrf
+          @if ($errors->any())
+              <div class="alert alert-danger">
+                  <ul>
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
         <div class="form-group">
           <label for="name">Item Name</label>
           <input class="form-control @error('name') is-invalid @enderror" id="name" placeholder="Enter Item Name" name="name">
@@ -71,9 +80,9 @@
        <label>Status</label>
         @foreach ( $ItemStatus as $value => $label )
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="status" value="{{ $value }}"
+            <input id="lable" class="form-check-input" type="radio" name="status" value="{{ $value }}"
             @if ($loop->first) checked @endif>
-            <label class="form-check-label">{{ $label }}</label>
+            <label for="lable" class="form-check-label">{{ $label }}</label>
           </div>
         @endforeach
         </div>

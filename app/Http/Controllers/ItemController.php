@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Enums\ItemStatusEnum;
 use App\Models\Category;
 use App\Models\Unit;
+use App\Http\Requests\admin\ItemRequest;
 
 class ItemController extends Controller
 {
@@ -16,7 +17,7 @@ class ItemController extends Controller
     public function index()
     {
         
-        $items = Item::paginate(10);
+        $items = Item::with(['category', 'unit'])->paginate(10);
         return view('admin.items.index', compact('items'));
     }
 
@@ -34,15 +35,9 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ItemRequest $request)
     {
-        $request->validate([
-        // 'name' => 'required',
-        // 'unit_id' => 'required|exists:units,id',
-        // 'category_id' => 'required|exists:categories,id',
-        // 'status'  => 'required'
-    ]);
-        Item::create($request->all());
+        Item::create($request->validated());
         session()->flash('success', 'Item created successfully.');
         return redirect()->route('admin.items.index');
     }
@@ -70,16 +65,10 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ItemRequest $request, string $id)
     {
-    //     $request->validate([
-    //     'name' => 'required',
-    //     'unit_id' => 'required|exists:units,id',
-    //     'category_id' => 'required|exists:categories,id',
-    //     'status'  => 'required'
-    // ]);
         $item = Item::findOrFail($id);
-        $item->update($request->all());
+        $item->update($request->validated());
         session()->flash('success', 'Item updated successfully.');
         return redirect()->route('admin.items.index');
     }

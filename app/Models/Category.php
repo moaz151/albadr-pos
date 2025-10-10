@@ -12,6 +12,9 @@ class Category extends Model
     protected $table = 'categories';
     public $timestamps = true;
     protected $fillable = ['name', 'status'];
+    protected $casts = [
+        'status' => CatStatusEnum::class,
+    ];
 
     public function items()
     {
@@ -23,11 +26,11 @@ class Category extends Model
         return $this->morphOne('App\Models\File', 'fileable')->where('usage', 'category_photo');
     }
 
-    public function casts(): array
-    {
-        return ([
-            'status' => CatStatusEnum::class,
-            ]) ;
-    }
+    // public function casts(): array
+    // {
+    //     return ([
+    //         'status' => CatStatusEnum::class,
+    //         ]) ;
+    // }
 
 }
