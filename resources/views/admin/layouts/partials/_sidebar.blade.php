@@ -36,7 +36,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item @if(request()->is('admin/sales/*')) menu-open  @endif ">
-            <a href="{{ route('admin.sales.create') }}" class="nav-link active">
+            <a href="" class="nav-link active">
               <i class="nav-icon fas fa-chart-line"></i>
               <p>
                 @lang('trans.sales')
@@ -45,7 +45,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link @if(request()->routeIs('admin.sales.create')) active  @endif">
+                <a href="{{ route('admin.sales.create') }}" class="nav-link @if(request()->routeIs('admin.sales.create')) active  @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Create Sale</p>
                 </a>

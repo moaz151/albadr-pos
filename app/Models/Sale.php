@@ -35,7 +35,8 @@ class Sale extends Model
 
     public function items()
     {
-        return $this->morphToMany('App\Models\Item', 'itemable')->withPivot('unit_price', 'quantity', 'total_price');
+        return $this->morphToMany('App\Models\Item', 'itemable')
+        ->withPivot('unit_price', 'quantity', 'total_price');
     }
 
 }

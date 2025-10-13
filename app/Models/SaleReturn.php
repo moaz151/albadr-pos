@@ -18,7 +18,8 @@ class SaleReturn extends Model
 
     public function items()
     {
-        return $this->morphToMany('App\Models\User', 'itemable');
+        return $this->morphToMany('App\Models\User', 'itemable')
+        ->withPivot('unit_price', 'quantity', 'total_price');
     }
 
 }

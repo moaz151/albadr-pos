@@ -16,10 +16,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('adminlte') }}/css/adminlte.min.css">
   <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/sweetalert2/sweetalert2.min.css">
-{{-- form Chat --}}
+  <link rel="stylesheet" href="{{ asset('adminlte/plugins/select2/css/select2.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('adminlte/plugins/jquery-ui/jquery-ui.min.css') }}">
+{{-- from Chat --}}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{{-- form Chat --}}
+{{-- from Chat --}}
   @stack('js')
 </head>
 <body class="hold-transition sidebar-mini">
@@ -28,7 +30,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 @include('admin.layouts.partials._nave')
 @include('admin.layouts.partials._sidebar')
-  
+
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -60,7 +62,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </div>
   <!-- /.content-wrapper -->
 
-  
+
 
   <!-- Main Footer -->
   <footer class="main-footer">
@@ -86,6 +88,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ asset('adminlte') }}/js/adminlte.min.js"></script>
 {{-- @stack('js') --}}
 <script src="{{ asset('adminlte') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="{{ asset('adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
+<script src="{{ asset('adminlte/js/custom.js') }}"></script>
+<script src="{{ asset('adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+<script>
+  // In your Javascript (external .js resource or <script> tag)
+  $(document).ready(function() {
+    $('.select2').select2({
+      width: '100%',
+      placeholder: '{{ __("trans.choose") }}',
+    });
+});
+</script>
+{{-- JQuery-UI datepicker --}}
+<script>
+  $( function() {
+    $( ".datepicker" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+  } );
+  </script>
 @stack('js')
 </body>
 </html>

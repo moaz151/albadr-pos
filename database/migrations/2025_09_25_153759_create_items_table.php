@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Enums\ItemStatusEnum;
+
 class CreateItemsTable extends Migration {
 
 	public function up()
@@ -19,7 +21,7 @@ class CreateItemsTable extends Migration {
 			$table->decimal('quantity');
 			$table->bigInteger('category_id')->unsigned();
 			$table->bigInteger('unit_id')->unsigned();
-			$table->integer('status');
+			$table->tinyInteger('status')->default(ItemStatusEnum::active);
 			$table->decimal('minimum_stock');
 		});
 	}
