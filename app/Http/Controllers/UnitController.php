@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Enums\UnitStatusEnum;
+use App\Http\Requests\admin\UnitRequest;
 
 class UnitController extends Controller
 {
@@ -29,7 +30,7 @@ class UnitController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UnitRequest $request)
     {
         Unit::create($request->all());
         session()->flash('success', 'Unit created successfully.');
@@ -57,7 +58,7 @@ class UnitController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UnitRequest $request, string $id)
     {
         $unit = Unit::findOrFail($id);
         $unit->update($request->all());
