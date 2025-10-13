@@ -39,7 +39,7 @@
                       <span class="badge badge-{{ $category->status->style() }}">{{ $category->status->label() }}</span>
                       </td>
                       <td> {{ "image from files table" }}</td>
-                      <td> {{ "Item Count from unit table" }}</td>
+                      <td> {{ $category->items_count }}</td>
                       <td> 
                         {{-- Edit Button --}}
                         <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-success btn-sm">
