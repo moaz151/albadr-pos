@@ -49,4 +49,9 @@ class User extends Authenticatable
             'status' => userStatusEnum::class,
         ];
     }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
 }

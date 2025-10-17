@@ -16,6 +16,7 @@ class CreateItemablesTable extends Migration {
 			$table->decimal('quantity');
 			$table->decimal('unit_price', 10,2);
 			$table->decimal('total_price', 10,2);
+			$table->text('notes')->nullable();
 		});
 	}
 

@@ -60,7 +60,7 @@
           </li>
           <li class="nav-item">
             <a href="{{ route('admin.users.index')}}" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-user"></i>
               <p>
                 Users
               </p>
@@ -87,6 +87,14 @@
               <i class="nav-icon fas fa-edit"></i>
               <p>
                 Units
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('admin.clients.index')}}" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Clients
               </p>
             </a>
           </li>

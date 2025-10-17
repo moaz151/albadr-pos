@@ -9,7 +9,9 @@ class Sale extends Model
 
     protected $table = 'sales';
     public $timestamps = true;
-    protected $fillable = array('total', 'discount', 'discount_type', 'shipping_cost', 'net_amount', 'paid_amount', 'remaining_amount', 'invoice_number', 'payment_type');
+    protected $fillable = array(
+        'total', 'discount', 'discount_type', 'shipping_cost', 'net_amount', 'paid_amount', 'remaining_amount',
+        'invoice_number', 'payment_type', 'client_id', 'safe_id', 'user_id');
 
    
 

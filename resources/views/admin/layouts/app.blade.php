@@ -7,7 +7,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ config('app.name') }} | Dashboard</title>
+  <title>{{ config('app.name') }} | {{ __('trans.dashboard') }}</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -39,12 +39,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">{{$pageName ?? "Dashboard"}}</h1>
+            <h1 class="m-0">{{$pageName ?? __('trans.dashboard')}}</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{url('/')}}">Home</a></li>
-              <li class="breadcrumb-item active">{{$pageName ?? "Dashboard"}}</li>
+              <li class="breadcrumb-item"><a href="{{url('/')}}">@lang('trans.home')</a></li>
+              <li class="breadcrumb-item active">{{$pageName ?? __('trans.dashboard')}}</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
