@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
-use App\Enums\CatStatusEnum;
+use App\Enums\CategoryStatusEnum;
 
 class CategoriesSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class CategoriesSeeder extends Seeder
                 ],
                 [
                     'name' => 'Category ' . $i,
-                    'status' => CatStatusEnum::active,
+                    'status' => CategoryStatusEnum::active,
                 ]);
         }
     }

@@ -29,7 +29,7 @@
                       <th width="200px">Balance</th>
                       <th width="200px">Status</th>
                       <th width="200px">Registed Via</th>
-                      <th width="100px">Actions</th>
+                      <th width="160px">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -47,15 +47,22 @@
                       </td>
                       <td>{{ $client->registered_via->label() }}</td>
                       <td>
+                         {{-- Edit Button --}}
                         <a href="{{ route('admin.clients.edit', $client->id) }}" class="btn btn-success btn-sm">
                             <i class="fas fa-edit">  </i>
                         </a>
-                          <a href="#"
-                            data-url="{{ route('admin.clients.destroy', $client->id) }}"
-                            data-id="{{$client->id}}"
-                            class="btn btn-danger btn-sm delete-button">
-                            <i class="fas fa-trash"></i>
-                          </a>
+                        {{-- Delete Button --}}
+                        <a href="#"
+                          data-url="{{ route('admin.clients.destroy', $client->id) }}"
+                          data-id="{{$client->id}}"
+                          class="btn btn-danger btn-sm delete-button">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                        {{-- Show Button --}}
+                        <a href="{{ route('admin.clients.show', $client->id) }}" class="btn btn-warning btn-sm">
+                          <i class="fas fa-eye">  </i>
+                        </a>
+
                       </td>
                     </tr>
                   @endforeach

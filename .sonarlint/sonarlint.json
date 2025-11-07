@@ -1,0 +1,40 @@
+{
+  "sonarLint": {
+    "connectedMode": {
+      "connections": {
+        "sonarcloud": []
+      }
+    },
+    "rules": {
+      "php": {
+        "S138": {
+          "level": "off"
+        },
+        "S1116": {
+          "level": "off"
+        },
+        "S1192": {
+          "level": "off"
+        },
+        "S101": {
+          "level": "off"
+        }
+      }
+    },
+    "exclusions": {
+      "filePatterns": [
+        "**/vendor/**",
+        "**/node_modules/**",
+        "**/storage/**",
+        "**/bootstrap/cache/**",
+        "**/public/build/**",
+        "**/database/migrations/**",
+        "**/database/factories/**",
+        "**/database/seeders/**",
+        "**/tests/**",
+        "**/*.blade.php"
+      ]
+    }
+  }
+}
+

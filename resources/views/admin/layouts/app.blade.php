@@ -22,7 +22,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {{-- from Chat --}}
-  @stack('js')
+
+<!-- Theme style -->
+  @if(app()->getLocale() == 'ar')
+  <link rel="stylesheet" href="{{ asset('adminlte/css/adminlte.min.css') }}">
+  @else
+  <link rel="stylesheet" href="{{ asset('adminlte/css/adminlte.min.css') }}">
+  @endif
+  @stack('css')
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">

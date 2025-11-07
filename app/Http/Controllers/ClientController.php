@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Client;
+use App\Models\Sale;
 use App\Http\Requests\admin\ClientRequest;
 use App\Enums\ClientStatusEnum;
 use App\Enums\ClientRegistrationEnum;
@@ -44,7 +45,11 @@ class ClientController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $client = Client::findOrFail($id);
+        $sales = Sale::where('client_id', $id)
+            ->latest('id')
+            ->paginate(10);
+        return view('admin.clients.show', compact('client', 'sales'));
     }
 
     /**

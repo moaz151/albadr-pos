@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\CatStatusEnum;
+use App\Enums\CategoryStatusEnum;
 
 class Category extends Model 
 {
@@ -13,7 +13,7 @@ class Category extends Model
     public $timestamps = true;
     protected $fillable = ['name', 'status'];
     protected $casts = [
-        'status' => CatStatusEnum::class,
+        'status' => CategoryStatusEnum::class,
     ];
 
     public function items()
@@ -29,7 +29,7 @@ class Category extends Model
     // public function casts(): array
     // {
     //     return ([
-    //         'status' => CatStatusEnum::class,
+    //         'status' => CategoryStatusEnum::class,
     //         ]) ;
     // }
 

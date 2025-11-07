@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
-use App\Enums\CatStatusEnum;
+use App\Enums\CategoryStatusEnum;
 
 class CategoryController extends Controller
 {
@@ -22,7 +22,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categoryStatus = CatStatusEnum::labels();
+        $categoryStatus = CategoryStatusEnum::labels();
         return view('admin.categories.create', compact('categoryStatus'));
     }
 
@@ -50,7 +50,7 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         $category = Category::findOrFail($id);
-        $categoryStatus = CatStatusEnum::labels();
+        $categoryStatus = CategoryStatusEnum::labels();
         return view('admin.categories.edit', compact('category', 'categoryStatus'));
     }
 

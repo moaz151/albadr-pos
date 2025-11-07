@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\ClientAccountTransaction;
+use App\Enums\ClientAccountTransactionTypeEnum;
 class Client extends Model 
 {
     use HasFactory;
@@ -21,5 +22,15 @@ class Client extends Model
         'registered_via' => \App\Enums\ClientRegistrationEnum::class,
         'status' => \App\Enums\ClientStatusEnum::class,
     ];
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function accountTransactions()
+    {
+        return $this->hasMany(ClientAccountTransaction::class);
+    }
 
 }

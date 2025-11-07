@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Enums\CatStatusEnum;
+use App\Enums\CategoryStatusEnum;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
@@ -19,7 +19,7 @@ class CategoryFactory extends Factory
     {
         return [
             'name' => fake()->unique()->word(),
-            'status' => fake()->randomElement(CatStatusEnum::cases()),
+            'status' => fake()->randomElement(CategoryStatusEnum::cases()),
         ];
     }
 }

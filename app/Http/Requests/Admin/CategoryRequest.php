@@ -4,7 +4,7 @@ namespace App\Http\Requests\admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Enums\CatStatusEnum;
+use App\Enums\CategoryStatusEnum;
 
 class CategoryRequest extends FormRequest
 {
@@ -25,7 +25,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|unique:categories,name' . $this->route('category'),
-            'status' => ['required', Rule::enum(CatStatusEnum::class)],
+            'status' => ['required', Rule::enum(CategoryStatusEnum::class)],
         ];
     }
 }

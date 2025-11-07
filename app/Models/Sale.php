@@ -20,6 +20,11 @@ class Sale extends Model
         return $this->morphMany('App\Models\SafeTransaction', 'reference');
     }
 
+    public function clientAccountTransaction()
+    {
+        return $this->morphMany('App\Models\ClientAccountTransaction', 'reference');
+    }
+
     public function client()
     {
         return $this->belongsTo('App\Models\Client');
@@ -38,7 +43,7 @@ class Sale extends Model
     public function items()
     {
         return $this->morphToMany('App\Models\Item', 'itemable')
-        ->withPivot('unit_price', 'quantity', 'total_price');
+        ->withPivot('unit_price', 'quantity', 'total_price' , 'notes');
     }
 
 }

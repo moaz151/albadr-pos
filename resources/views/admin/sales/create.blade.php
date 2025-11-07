@@ -25,7 +25,8 @@
                                         @foreach($clients as $client)
                                             <option
                                                 @if(old('client_id') == $client->id) selected @endif
-                                                value="{{ $client->id }}">{{ $client->name }}</option>
+                                                value="{{ $client->id }}"
+                                            >{{ $client->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('client_id')
@@ -100,7 +101,7 @@
                                             <option
                                                 data-price="{{$item->price}}"
                                                 data-quantity="{{$item->quantity}}"
-                                                value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -143,44 +144,44 @@
                                     <th>Name</th>
                                     <th>Price</th>
                                     <th style="width: 120px">Qnt</th>
-                                    <th style="width: 140px">Total</th>
+                                    <th style="width: 100px">Total</th>
                                     <th>Notes</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                                 <tbody id="items_list">
                                     @foreach((array)old('items') as $item)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-
-                                        <td>
-                                            <span>{{ $item['name'] }}</span>
-                                            <input type="hidden" name="items[{{ $item['id'] }}][id]" value="{{ $item['id'] }}">
-                                            <input type="hidden" name="items[{{ $item['id'] }}][name]" value="{{ $item['name'] }}">
-                                        </td>
-                                        <td>
-                                            {{ $item['price'] }}
-                                            <input type="hidden" name="items[{{ $item['id'] }}][price]" value="{{ $item['price'] }}">
-                                        </td>
-                                        
-                                        <td>
-                                            <input type="number" class="form-control" name="items[{{ $item['id'] }}][qty]" value="{{ $item['qty'] }}">
-                                        </td>
-                                        <td>
-                                            {{ $item['itemTotal'] }}
-                                            <input type="hidden" name="items[{{ $item['id'] }}][itemTotal]" value="{{ $item['itemTotal'] }}">
-                                        </td>
-                                        <td>
-                                            {{ $item['notes'] }}
-                                            <input type="hidden" name="items[{{ $item['id'] }}][notes]" value="{{ $item['notes'] }}">
-                                        </td>
-                                        <td><button type="button" class="btn btn-danger btn-sm deleteItem"><i class="fa fa-trash"></i></button></td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                                <span>{{ $item['name'] }}</span>
+                                                <input type="hidden" name="items[{{ $item['id'] }}][id]" value="{{ $item['id'] }}">
+                                                <input type="hidden" name="items[{{ $item['id'] }}][name]" value="{{ $item['name'] }}">
+                                            </td>
+                                            <td>
+                                                {{ $item['price'] }}
+                                                <input type="hidden" name="items[{{ $item['id'] }}][price]" value="{{ $item['price'] }}">
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" name="items[{{ $item['id'] }}][qty]" value="{{ $item['qty'] }}">
+                                            </td>
+                                            <td>
+                                                {{ $item['itemTotal'] }}
+                                                <input type="hidden"  name="items[{{ $item['id'] }}][itemTotal]" value="{{ $item['itemTotal'] }}">
+                                            </td>
+                                            <td>
+                                                {{ $item['notes'] }}
+                                                <input type="hidden" name="items[{{ $item['id'] }}][notes]" value="{{ $item['notes'] }}">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm deleteItem"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot>
                                 <tr>
                                     <th colspan="4" class="text-right">Total</th>
-                                    <th id="total_price">{{ collect(old('itemtTotal'))->sum('price') }}</th>
+                                    <th id="total_price">{{ collect(old('items'))->sum('itemTotal') }}</th>
                                 </tr>
                                 <tr>
                                     <th colspan="4" class="text-right">Discount</th>
@@ -205,12 +206,12 @@
                             <div class="row">
                                 <div class="col-sm-3">
                                     <label>@lang('trans.discount_type')</label>
-                                    @foreach ($discountTypes as $discountTypeVal => $discountType)
+                                    @foreach($discountTypes as $discountTypeVal => $discountType)
                                         <div class="form-check">
-                                            <input class="form-check-input" id="discount{{ $discountTypeVal }}" type="radio" name="discount_type"
-                                                    value="{{ $discountTypeVal }}"
-                                                    @if(old('discount_type') == $discountTypeVal || $loop->first) checked @endif>
-                                            <label for="discount{{ $discountTypeVal }}" class="form-check-label">{{ $discountType }}</label>
+                                            <input class="form-check-input" id="discount{{$discountTypeVal}}" type="radio" name="discount_type"
+                                                   value="{{ $discountTypeVal }}"
+                                                   @if(old('discount_type') == $discountTypeVal || $loop->first) checked @endif>
+                                            <label for="discount{{$discountTypeVal}}" class="form-check-label">{{ $discountType }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -221,33 +222,28 @@
                                             type="text"
                                             class="form-control"
                                             id="discount_value"
-                                            name="discount"
-                                            value="{{ old('discount') }}"
+                                            name="discount_value"
+                                            value="{{ old('discount_value') }}"
                                             placeholder="@lang('trans.discount_value')">
                                     </div>
                                 </div>
                             </div>
-                        
                         </div>
                         <div class="payment-type">
                             <div class="row">
                                 <div class="col-sm-3">
                                     <label>@lang('trans.payment_type')</label>
                                     <div class="form-check">
-                                        <input class="form-check-input" id="payment_type{{ \App\Enums\PaymentTypeEnum::cash }}"
-                                                type="radio" name="payment_type"
-                                                value="{{ \App\Enums\PaymentTypeEnum::cash }}"
-                                                @if(old('payment_type') == \App\Enums\PaymentTypeEnum::cash || true) checked @endif>
-                                        <label for="payment_type{{ \App\Enums\PaymentTypeEnum::cash }}"
-                                            class="form-check-label">{{ \App\Enums\PaymentTypeEnum::cash->label() }}</label>
+                                        <input class="form-check-input" id="payment_type{{\App\Enums\PaymentTypeEnum::cash}}" type="radio" name="payment_type"
+                                               value="{{\App\Enums\PaymentTypeEnum::cash}}"
+                                               @if(old('payment_type') == \App\Enums\PaymentTypeEnum::cash->value || true) checked @endif>
+                                        <label for="payment_type{{\App\Enums\PaymentTypeEnum::cash}}" class="form-check-label">{{ \App\Enums\PaymentTypeEnum::cash->label() }}</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" id="payment_type{{ \App\Enums\PaymentTypeEnum::debt }}"
-                                                type="radio" name="payment_type"
-                                                value="{{ \App\Enums\PaymentTypeEnum::debt }}"
-                                                @if(old('payment_type') == \App\Enums\PaymentTypeEnum::debt) checked @endif>
-                                        <label for="payment_type{{ \App\Enums\PaymentTypeEnum::debt }}"
-                                            class="form-check-label">{{ \App\Enums\PaymentTypeEnum::debt->label() }}</label>
+                                        <input class="form-check-input" id="payment_type{{\App\Enums\PaymentTypeEnum::debt}}" type="radio" name="payment_type"
+                                               value="{{\App\Enums\PaymentTypeEnum::debt}}"
+                                               @if(old('payment_type') == \App\Enums\PaymentTypeEnum::debt->value) checked @endif>
+                                        <label for="payment_type{{\App\Enums\PaymentTypeEnum::debt}}" class="form-check-label">{{ \App\Enums\PaymentTypeEnum::debt->label() }}</label>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
@@ -277,163 +273,144 @@
     </div>
 @endsection
 
+
 @push('js')
     <script>
-        $(document).ready(function(){
-                calculateDiscount();
-            });
-
-      var counter = 1;
-      var totalPrice = parseFloat("{{ collect(old('items'))->sum('itemTotal') ?? 0 }}");
-      var net = 0;
-      $("#add_item").on('click', function(e){
-        e.preventDefault();
-        let item = $("#item_id");
-        let itemID = item.val();
-        let selectedItem = $("#item_id option:selected");
-        let itemName = selectedItem.text();
-        let itemPrice = selectedItem.data('price');
-        let qnt = $("#qty");
-        var itemQty = qnt.val();
-        let notes = $("#notes");
-        let itemNotes = notes.val();
-        let itemTotal = itemPrice * itemQty;
-
-        // validate inputs : item choosen , qty > 0, available qty
-        if(!itemID){
-          // sweet alart error
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Please choose an item',
-          })
-          return;
-        }
-        if(!itemQty || itemQty <= 0 || itemQty > $("#item_id option:selected").data('quantity')){
-          // sweet alart error
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Please enter a valid quantity',
-          })
-          return;
-        }
-        console.log("clicked");
-
-        console.log(itemID);
-        console.log(itemName);
-        console.log(itemPrice);
-        console.log(itemQty);
-        console.log(itemNotes);
-
-        $("#items_list").append('' +
-          '<tr>' +
-            '<td>'+ counter +'</td>'+
-            
-            '<td><span>'+ itemName + '</span><input type="hidden" name="items['+itemID+'][id]" value="'+itemID+'">' +
-                '<input type="hidden" name="items['+itemID+'][name]" value="'+itemName+'">' +
-            '</td>'+
-
-            '<td>'+ itemPrice +
-                '<input type="hidden" name="items['+itemID+'][price]" value="'+itemPrice+'">' +
-            '</td>'+
-
-            '<td><input type="number" class="form-control" name="items['+itemID+'][qty]" value="'+itemQty+'"></td>'+
-
-            '<td>'+ itemTotal +
-                '<input type="hidden" name="items['+itemID+'][itemTotal]" value="'+itemTotal+'">' +
-            '</td>'+
-
-            '<td>'+ itemNotes + '<input type="hidden" name="items['+itemID+'][notes]" value="'+itemNotes+'">' +'</td>'+
-
-            '<td><button type="button" class="btn btn-danger btn-sm deleteItem"><i class="fa fa-trash"></i></button></td>'+
-          '</tr>');
-        counter++;
-
-
-        totalPrice += itemTotal;
-        $("#total_price").text(totalPrice);
-        // totalprice = Math.round((totalPrice + Number.EPSILON) * 100) / 100;
-
-        calculateDiscount();
-        
-
-        item.val("");
-        qnt.val("");
-        notes.val("");
-
-        $("#discount_value").on('keyup', function(e){
-            e.preventDefault();
+        $(document).ready(function (){
             calculateDiscount();
         });
-        $('input[name="discount_type"]').on('change keyup', function(e){
+
+        var counter = 1
+        var totalPrice = parseFloat("{{ collect(old('items'))->sum('itemTotal') ?? 0 }}");
+        var net = 0;
+        $("#add_item").on('click', function (e) {
             e.preventDefault();
-            calculateDiscount();
+            let item = $("#item_id");
+            let itemID = item.val();
+            let selectedItem = $("#item_id option:selected");
+            let itemName = selectedItem.text()
+            let itemPrice = selectedItem.data('price');
+            let qnt = $("#qty")
+            var itemQty = qnt.val();
+            let notes = $("#notes")
+            let itemNotes = notes.val();
+            let itemTotal = itemPrice * itemQty;
+
+            // validate inputs : item chosen , qnt , qnt > 0 , qnt <= available qnt
+            if (!itemID) {
+                // sweelalet error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please choose an item',
+                })
+                return;
+            }
+            if (!itemQty || itemQty <= 0 || itemQty > selectedItem.data('quantity')) {
+                // sweelalet error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please enter a valid quantity',
+                })
+                return;
+            }
+
+            $("#items_list").append('' +
+                '<tr>' +
+                '<td>' + counter + '</td>' +
+                '<td><span>' + itemName + '</span><input type="hidden" name="items['+itemID+'][id]" value="'+itemID+'">' +
+                '<input type="hidden" name="items['+itemID+'][name]" value="'+itemName+'">' +
+                '</td>' +
+                '<td>' + itemPrice +
+                '<input type="hidden" name="items['+itemID+'][price]" value="'+itemPrice+'">' +
+                '</td>' +
+                '<td><input type="number" class="form-control" name="items['+itemID+'][qty]" value="'+itemQty+'">' +
+                '</td>' +
+                '<td>' + itemTotal +
+                '<input type="hidden" name="items['+itemID+'][itemTotal]" value="'+itemTotal+'">' +
+                '</td>' +
+                '<td>' + itemNotes + '<input type="hidden" name="items['+itemID+'][notes]" value="'+itemNotes+'">' +
+                '</td>' +
+                '<td><button type="button" class="btn btn-danger btn-sm deleteItem"><i class="fa fa-trash"></i></button></td>' +
+                '</tr>');
+            counter++
+
+            totalPrice += itemTotal;
+            totalPrice = Math.round((totalPrice + Number.EPSILON) * 100) / 100;
+            $("#total_price").text(totalPrice);
+
+            calculateDiscount()
+
+
+            item.val("").trigger('change')
+            qnt.val("")
+            notes.val("")
         })
 
-        // session Way//////////////////////////////////////////////////
-        $(document).on('click', '.deleteItem', function(e){
-            let itemTotalText = $(this).closest('tr').find('td:nth-child(5)').contents().filter(function(){ return this.nodeType === 3; }).text();
-            let itemTotal = parseFloat(itemTotalText || 0);
-            totalPrice = parseFloat((totalPrice - itemTotal).toFixed(2));
-            $(this).closest('tr').remove();
+        $("#discount_value").on('keyup', function (e){
+            e.preventDefault()
+            calculateDiscount()
+        })
+        $('input[name="discount_type"]').on('change', function (e){
+            e.preventDefault()
+            calculateDiscount()
+        })
+
+        $(document).on('click', '.deleteItem', function (e) {
+            // get the total of the item in the same row
+            let itemTotal = $(this).closest('tr').find('td:nth-child(5)').text();
+            totalPrice -= itemTotal;
+            totalPrice = Math.round((totalPrice + Number.EPSILON) * 100) / 100;
             $("#total_price").text(totalPrice);
-            calculateDiscount();
-      });
-        // /session Way//////////////////////////////////////////////////
-        ///// my Way //////////////////////////////////////////////////////
-        // $(document).on('click', '.deleteItem', function(e){
-        //     // get the total of the item to be deleted
-        //     let row = e.target.closest('tr');
-        //     let itemTotal = parseFloat(row.cells[4].innerText);
-        //     // subtract it from the total price
-        //     $("#total_price").text(totalPrice);
-        //     totalPrice -= itemTotal;
-        //     // recalculate discount and net
-        //     calculateDiscount();
-        //     // remove the row
-        //     row.remove();
-        // });
-        ///// /my Way //////////////////////////////////////////////////////
+            calculateDiscount()
+            $(this).closest('tr').remove();
+        })
+
+
+
 
         function calculateDiscount(){
             let discount = 0;
-            let discountType = $("input[name='discount_type']:checked").val();
-            if(discountType === '{{ \App\Enums\DiscountTypeEnum::fixed->value }}'){ // percentage
+            // get discount type using input name
+            let discountType = $('input[name="discount_type"]:checked').val();
+            if (discountType === '{{ \App\Enums\DiscountTypeEnum::fixed->value }}') {
                 discount = parseFloat($("#discount_value").val() || 0);
-            } else { // fixed
+            } else {
                 let discountPercent = parseFloat($("#discount_value").val() || 0);
                 discount = (totalPrice * discountPercent) / 100;
+                // round to 2 decimal places
                 discount = Math.round((discount + Number.EPSILON) * 100) / 100;
             }
-                net = totalPrice - discount;
-                net = Math.round((net + Number.EPSILON) * 100) / 100;
+            net = totalPrice - discount;
+            net = Math.round((net + Number.EPSILON) * 100) / 100;
             $("#discount").text(discount);
             $("#net").text(net);
-            calculateRemaining();
+            calculateRemaining()
         }
-      });
 
-      $('input[name="payment_type"]').on('change', function(e){
-        let paymentType = $('input[name="payment_type"]:checked').val();
-        if(PaymentType == 1){
-            $("#payment_amount").val();
-            $("#payment_amount").attr('disabled', true);
-        } else {
-            $("#payment_amount").attr('disabled', false);
-        }
-            e.preventDefault();
-            calculateRemaining();
-        });
+        $('input[name="payment_type"]').on('change', function (e){
+            let paymentType = $('input[name="payment_type"]:checked').val();
+            if(paymentType == 1){
+                $("#payment_amount").val("");
+                $("#payment_amount").attr('disabled', true);
+                // update payment_amount
+            }else{
+                $("#payment_amount").attr('disabled', false);
+            }
+            e.preventDefault()
+            calculateRemaining()
+        })
 
-        $("#payment_amount").on('keyup', function(e){
-            e.preventDefault();
-            calculateRemaining();
-        });
+        $("#payment_amount").on('keyup', function (e){
+            e.preventDefault()
+            calculateRemaining()
+
+        })
 
         function calculateRemaining(){
             let paymentType = $('input[name="payment_type"]:checked').val();
-            paid = parseFloat($("#payment_amount").val());
+            let paid = parseFloat($("#payment_amount").val());
             if(paymentType == 1){
                 paid = net;
             }
@@ -442,7 +419,5 @@
             $("#paid").text(paid);
             $("#remaining").text(remaining);
         }
-        
-        
     </script>
 @endpush
