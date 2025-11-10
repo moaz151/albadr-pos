@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Item;
 use App\Enums\CategoryStatusEnum;
+use App\Http\Requests\admin\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -13,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::withCount('items')->paginate(10);
+        $categories = Category::with('photo')->withCount('items')->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -29,11 +31,24 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        Category::create($request->all());
-        session()->flash('success', 'Category created successfully.');
-        return redirect()->route('admin.categories.index');
+        $category = Category::create($request->validated());
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');                    
+            $filename = time() . '_' . $file->getClientOriginalName(); 
+            $file->storeAs('public/categories', $filename);    
+            
+            $category->photo()->create([
+                'usage' => 'category_photo',                   
+                'path' => 'categories/' . $filename,           
+                'ext' => $file->getClientOriginalExtension(),  
+            ]);
+        }
+
+        return redirect()->route('admin.categories.index')
+            ->with('success', 'Category created successfully.');
     }
 
     /**
@@ -41,7 +56,9 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $items = Item::where('category_id', $id)->paginate(10);
+        return view('admin.categories.show', compact('category', 'items'));
     }
 
     /**

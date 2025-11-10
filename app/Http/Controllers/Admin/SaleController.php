@@ -129,13 +129,15 @@ class SaleController extends Controller
         return $total;
     }
 
-    private function calculateDiscount(SaleRequest $request, float $total)
+    private function calculateDiscount(SaleRequest $request, float $total): float
     {
         if($request->discount_type == DiscountTypeEnum::percentage->value){
             $discount = $total * ($request->discount_value/100);
         }else {
             $discount = $request->discount_value;
         }
+        
+        return $discount ?? 0;
     }
 
     /**
@@ -148,7 +150,6 @@ class SaleController extends Controller
     {
         $discount = $this->calculateDiscount($request, $total);
         $net = $total - $discount;
-
         if($request->payment_type == PaymentTypeEnum::debt->value){
             $paid = $request->payment_amount;
         }else {
@@ -156,7 +157,7 @@ class SaleController extends Controller
         }
 
         $remaining = $net - $paid;
-        $sale->total = $total;
+        $sale->total = $total; // error: in this way the total = total from the paramater directly
         $sale->discount = $discount;
         $sale->net_amount = $net;
         $sale->paid_amount = $paid;

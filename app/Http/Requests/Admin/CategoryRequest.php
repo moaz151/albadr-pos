@@ -24,8 +24,9 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:categories,name' . $this->route('category'),
-            'status' => ['required', Rule::enum(CategoryStatusEnum::class)],
+            'name' => 'required|string|max:255|unique:categories,name,' . $this->route('category'),
+            'status' => ['required',Rule::enum(CategoryStatusEnum::class)],
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }
 }

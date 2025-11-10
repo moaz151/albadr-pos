@@ -31,7 +31,7 @@
                                 <tr><th>Payment Type</th><td><span class="badge badge-{{ $sale->payment_type->style() }}">{{ $sale->payment_type->label() }}</span></td></tr>
                                 <tr><th>Warehouse</th><td>{{ optional($sale->warehouse)->name }}</td></tr>
                                 <tr><th>Cash Safe</th><td>{{ optional($sale->safe)->name }}</td></tr>
-                                <tr><th>User</th><td>{{ optional($sale->user)->name }}</td></tr>
+                                <tr><th>User</th><td>{{ optional(auth()->user())->full_name }}</td></tr>
                                 <tr><th>Date</th><td>{{ $sale->created_at }}</td></tr>
                             </tbody>
                         </table>

@@ -38,12 +38,24 @@
                       <td>
                       <span class="badge badge-{{ $category->status->style() }}">{{ $category->status->label() }}</span>
                       </td>
-                      <td> {{ "image from files table" }}</td>
+                      <td>
+                        @if($category->photo)
+                            <img src="{{ Storage::url($category->photo->path) }}" 
+                                 alt="{{ $category->name }}" 
+                                 style="max-width: 50px; max-height: 50px; object-fit: cover">
+                        @else
+                            <span class="text-muted">No image</span>
+                        @endif
+                      </td>
                       <td> {{ $category->items_count }}</td>
                       <td> 
                         {{-- Edit Button --}}
                         <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-success btn-sm">
                             <i class="fas fa-edit">  </i>
+                        </a>
+                        {{-- Show Button --}}
+                        <a href="{{ route('admin.categories.show', $category->id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i>
                         </a>
                         {{-- Delete Button --}}
                         <a href="#"
