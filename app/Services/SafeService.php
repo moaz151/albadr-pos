@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Enums\SafeTransactionTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\DB;
 
 class SafeService
@@ -24,7 +23,7 @@ class SafeService
 
     public function outTransaction(Model $reference, float $amount, string $description): void
     {
-        $this->performTransaction($reference, $amount, SafeTransactionTypeEnum::in, $description);
+        $this->performTransaction($reference, $amount, SafeTransactionTypeEnum::out, $description);
     }
 
     private function performTransaction(Model $reference, float $amount, SafeTransactionTypeEnum $type, string $description): void
@@ -47,7 +46,7 @@ class SafeService
 
              $reference->safeTransaction()->create([
                  'user_id' => Auth::user()->id,
-                 'type' => $type,
+                 'type' => $type, // in or out
                  'safe_id' => $safe->id,
                  'amount' => $amount,
                  'balance_after' => $safe->fresh()->balance,

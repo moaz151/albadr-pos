@@ -8,7 +8,7 @@ class StockManageService
 {
     public function initStock($item, $warehouseId, $initialStock)
     {
-        $item->warehouse()->attach($warehouseId, ['quantity' => $initialStock]);
+        $item->warehouses()->attach($warehouseId, ['quantity' => $initialStock]);
         $item->warehouseTransactions()->create([
             'transaction_type' => WarehouseTransactionTypeEnum::init,
             'quantity' => $initialStock,
@@ -21,11 +21,11 @@ class StockManageService
     {
         $stock = $item->warehouses()->where('itemable_id', $warehouseId)->first();
         if(!$stock){
-            $item->initStock($item, $warehouseId, 0);
+            $this->initStock($item, $warehouseId, 0);
         }
         $item->warehouses()->where('itemable_id', $warehouseId)->decrement('quantity', $quantity);
 
-        $item->warehouseTransaction()->create([
+        $item->warehouseTransactions()->create([
             'transaction_type' => WarehouseTransactionTypeEnum::sub,
             'quantity' => $quantity * -1,
             'quantity_after' => $item->warehouses()->where('itemable_id', $warehouseId)->first()->pivot->quantity,

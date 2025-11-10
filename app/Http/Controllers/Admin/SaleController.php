@@ -25,6 +25,7 @@ use App\Http\Requests\Admin\SaleRequest;
 use Illuminate\Support\Facades\DB;
 use App\Services\SafeService;
 use App\Services\StockManageService;
+use App\Services\ClientAccountService;
 
 
 class SaleController extends Controller
@@ -50,9 +51,9 @@ class SaleController extends Controller
         $sale = $user->sales()->create($request->validated());
         $total = $this->attachItems($request, $sale);
         $this->updateSaleTotals($total, $request, $sale);
-        $safeService = new SafeService();
-        $safeService->inTransaction($sale, $sale->paid_amount, 'Sale Payment, Invoice #: ' . $sale->invoice_number);
-        $this->updateClientAccountBalance($sale);
+        (new SafeService())->inTransaction($sale, $sale->paid_amount, 'Sale Payment, Invoice #: ' . $sale->invoice_number);
+        // $this->updateClientAccountBalance($sale);
+        (new ClientAccountService())->handleClientBalance($sale, $sale->net_amount, $sale->paid_amount);
         // client account update
         DB::commit();
         return back()->with('success', __('trans.saved_successfully'));
@@ -65,7 +66,7 @@ class SaleController extends Controller
      * 
      * @return void
      */
-
+    // @TODO: moved to ClientAccountBalanceService
     private function updateClientAccountBalance(Sale $sale): void
     {
         $balance = $sale->net_amount - $sale->paid_amount;
