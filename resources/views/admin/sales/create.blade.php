@@ -14,7 +14,7 @@
                     <form method="POST" action="{{ route('admin.sales.store') }}" id="main-form">
                         @csrf
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="client_id">@lang('trans.client')</label>
                                     <select
@@ -36,7 +36,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="sale_date">@lang('trans.date')</label>
                                     <input
@@ -52,7 +52,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="invoice_number">@lang('trans.invoice_number')</label>
                                     <input
@@ -84,6 +84,20 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="warehouse_id">@lang('trans.warehouse')</label>
+                                    <select id="warehouse_id" name="warehouse_id" class="form-control @error('warehouse_id') is-invalid @enderror">
+                                    <option value="">@lang('trans.choose_warehouse')</option>
+                                    @foreach($warehouses as $warehouse)
+                                        <option value="{{ $warehouse->id }}"
+                                        {{ (string) old('warehouse_id') === (string) $warehouse->id ? 'selected' : '' }}>
+                                        {{ $warehouse->name }}
+                                        </option>
+                                    @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -306,15 +320,15 @@
                 })
                 return;
             }
-            if (!itemQty || itemQty <= 0 || itemQty > selectedItem.data('quantity')) {
-                // sweelalet error
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Please enter a valid quantity',
-                })
-                return;
-            }
+            // if (!itemQty || itemQty <= 0 || itemQty > selectedItem.data('quantity')) {
+            //     // sweelalet error
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Error',
+            //         text: 'Please enter a valid quantity',
+            //     })
+            //     return;
+            // }
 
             $("#items_list").append('' +
                 '<tr>' +

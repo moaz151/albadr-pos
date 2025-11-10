@@ -29,9 +29,9 @@
                       <th>Category ID</th>
                       <th>Unit ID</th>
                       <th>Status</th>
-                      <th>Description</th>
+                      <th style="width: 400px">Description</th>
                       <th>Minimum stock</th>
-                      <th>Actions</th>
+                      <th style="width: 100px">Actions</th>
                     </tr>
                   </thead>
                   <tbody>

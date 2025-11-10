@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Item;
 use App\Models\Sale;
 use App\Models\User;
+use App\Models\Warehouse;
 use App\Enums\SafeStatusEnum;
 use App\Enums\UnitStatusEnum;
 use App\Enums\CategoryStatusEnum;
@@ -22,6 +23,8 @@ use App\Enums\PaymentTypeEnum;
 use App\Enums\SafeTransactionTypeEnum;
 use App\Http\Requests\Admin\SaleRequest;
 use Illuminate\Support\Facades\DB;
+use App\Services\SafeService;
+use App\Services\StockManageService;
 
 
 class SaleController extends Controller
@@ -32,10 +35,11 @@ class SaleController extends Controller
         $clients = Client::Where('status', ClientStatusEnum::active)->get();
         $safes = Safe::where('status', SafeStatusEnum::active)->get();
         $units = Unit::where('status', UnitStatusEnum::active)->get();
+        $warehouses = Warehouse::all();
         $items = Item::where('status', ItemStatusEnum::active)->get();
         $discountTypes = DiscountTypeEnum::labels();
         return view('admin.sales.create',
-         compact('clients', 'safes', 'units', 'items', 'discountTypes'));
+         compact('clients', 'safes', 'units', 'items', 'discountTypes', 'warehouses'));
     }
 
     public function store(SaleRequest $request)
@@ -46,7 +50,8 @@ class SaleController extends Controller
         $sale = $user->sales()->create($request->validated());
         $total = $this->attachItems($request, $sale);
         $this->updateSaleTotals($total, $request, $sale);
-        SafeService::inTransaction($sale, $sale->paid_amount, 'Sale Payment, Invoice #: ' . $sale->invoice_number);
+        $safeService = new SafeService();
+        $safeService->inTransaction($sale, $sale->paid_amount, 'Sale Payment, Invoice #: ' . $sale->invoice_number);
         $this->updateClientAccountBalance($sale);
         // client account update
         DB::commit();
@@ -104,7 +109,8 @@ class SaleController extends Controller
                 ]
             ]);
             // Stock Update
-            $queriedItem->decrement('quantity', $item['qty']);
+            // $queriedItem->decrement('quantity', $item['qty']);
+            (new StockManageService())->decreaseStock($queriedItem, $request->warehouse_id, $item['qty'], $sale);
             $total += $totalPrice;
         }
         return $total;

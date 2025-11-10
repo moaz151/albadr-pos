@@ -11,7 +11,7 @@ class Sale extends Model
     public $timestamps = true;
     protected $fillable = array(
         'total', 'discount', 'discount_type', 'shipping_cost', 'net_amount', 'paid_amount', 'remaining_amount',
-        'invoice_number', 'payment_type', 'client_id', 'safe_id', 'user_id');
+        'invoice_number', 'payment_type', 'client_id', 'safe_id', 'user_id', 'warehouse_id');
 
    
 
@@ -38,6 +38,10 @@ class Sale extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+    public function warehouse()
+    {
+        return $this->belongsTo('App\Models\Warehouse');
     }
 
     public function items()

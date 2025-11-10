@@ -18,7 +18,7 @@ class CreateItemsTable extends Migration {
 			$table->string('item_code')->nullable();
 			$table->text('description')->nullable();
 			$table->decimal('price', 10,2);
-			$table->decimal('quantity');
+			// $table->decimal('quantity');
 			$table->bigInteger('category_id')->unsigned();
 			$table->bigInteger('unit_id')->unsigned();
 			$table->tinyInteger('status')->default(ItemStatusEnum::active);

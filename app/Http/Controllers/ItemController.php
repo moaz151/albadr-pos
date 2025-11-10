@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Item;
 use App\Enums\ItemStatusEnum;
 use App\Models\Category;
 use App\Models\Unit;
+use App\Models\Warehouse;
 use App\Http\Requests\admin\ItemRequest;
+use App\Services\StockManageService;
 
 class ItemController extends Controller
 {
@@ -29,7 +32,8 @@ class ItemController extends Controller
         $categories = Category::all();
         $units = Unit::all();
         $ItemStatus = ItemStatusEnum::labels();
-        return view('admin.items.create', compact('ItemStatus', 'categories', 'units'));
+        $warehouses = Warehouse::all();
+        return view('admin.items.create', compact('ItemStatus', 'categories', 'units', 'warehouses'));
     }
 
     /**
@@ -37,9 +41,37 @@ class ItemController extends Controller
      */
     public function store(ItemRequest $request)
     {
-        Item::create($request->validated());
-        session()->flash('success', 'Item created successfully.');
-        return redirect()->route('admin.items.index');
+        DB::beginTransaction();
+        $item = Item::create($request->validated());
+        // Photo is optional
+        if($request->hasFile('photo') && $request->file('photo')->isValid()){
+            $file = $request->file('photo');
+            $ext = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . uniqid() . '.' . $ext;
+            $path = $file->storeAs('items', $fileName, 'public');
+            $item->mainPhoto()->create([
+                'usage' => 'item_photo',
+                'path' => $path,
+                'ext' => $ext,
+            ]);
+        }
+        if($request->hasFile('gallery')){
+            foreach($request->file('gallery') as $gallery){
+                if($gallery && $gallery->isValid()) {
+                    $ext = $gallery->getClientOriginalExtension();
+                    $fileName = time() . '_' . uniqid() . '.' . $ext;
+                    $path = $gallery->storeAs('items', $fileName, 'public');
+                    $item->gallery()->create([
+                        'usage' => 'item_gallery',
+                        'path' => $path,
+                        'ext' => $ext,
+                    ]);
+                }
+            }
+        }
+        (new StockManageService)->initStock($item, $request->warehouse_id, $request->quantity);
+        DB::commit();
+        return to_route('admin.items.index')->with('success', 'Item created successfully.');
     }
 
     /**

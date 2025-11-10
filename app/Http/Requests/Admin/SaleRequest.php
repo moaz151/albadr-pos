@@ -30,6 +30,7 @@ class SaleRequest extends FormRequest
             'sale_date' => ['required', 'date'],
             'invoice_number' => ['required', 'unique:sales,invoice_number'],
             'safe_id' => ['required', 'exists:safes,id'],
+            'warehouse_id' => ['required', 'exists:warehouses,id'],
             'discount_type' => ['required'],
             'discount_value' => ['nullable', 'numeric'],
             'payment_type' => ['required', Rule::enum(PaymentTypeEnum::class)],

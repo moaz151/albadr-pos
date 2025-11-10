@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Warehouse;
 
 class CreateSalesTable extends Migration {
 
@@ -22,6 +23,7 @@ class CreateSalesTable extends Migration {
 			$table->decimal('paid_amount', 10,2)->default(0);
 			$table->decimal('remaining_amount', 10,2)->default(0);
 			$table->string('invoice_number');
+			$table->foreignIdFor(Warehouse::class, 'warehouse_id');
 			$table->tinyInteger('payment_type');
 		});
 	}

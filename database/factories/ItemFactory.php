@@ -25,7 +25,6 @@ class ItemFactory extends Factory
             'unit_id' => $this->faker->randomElement($unitIds),
             'description' => $this->faker->sentence(),
             'price' => $this->faker->randomFloat(2, 1, 1000),
-            'quantity' => $this->faker->numberBetween(0, 100),
             'status' => $this->faker->randomElement([\App\Enums\ItemStatusEnum::active, \App\Enums\ItemStatusEnum::inactive]),
             'minimum_stock' => $this->faker->randomFloat(2, 0, 20),
         ];

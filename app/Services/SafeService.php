@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\SafeTransactionTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\DB;
 
 class SafeService
@@ -45,7 +46,7 @@ class SafeService
             $safe->save();
 
              $reference->safeTransaction()->create([
-                 'user_id' => Auth::id,
+                 'user_id' => Auth::user()->id,
                  'type' => $type,
                  'safe_id' => $safe->id,
                  'amount' => $amount,
