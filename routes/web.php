@@ -19,7 +19,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/home', [HomeController::class, 'index'])->name('home');
-        Route::resource('sales', SaleController::class)->only('create', 'store');
+        Route::resource('sales', SaleController::class);
+        Route::get('sales/{id}/print', [SaleController::class, 'print'])->name('sales.print');
         Route::resource('users', UserController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('units', UnitController::class);

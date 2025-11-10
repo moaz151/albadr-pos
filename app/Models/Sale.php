@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\PaymentTypeEnum;
+use App\Enums\DiscountTypeEnum;
 
 class Sale extends Model 
 {
@@ -12,6 +14,11 @@ class Sale extends Model
     protected $fillable = array(
         'total', 'discount', 'discount_type', 'shipping_cost', 'net_amount', 'paid_amount', 'remaining_amount',
         'invoice_number', 'payment_type', 'client_id', 'safe_id', 'user_id', 'warehouse_id');
+
+    protected $casts = [
+        'payment_type' => PaymentTypeEnum::class,
+        'discount_type' => DiscountTypeEnum::class,
+    ];
 
    
 

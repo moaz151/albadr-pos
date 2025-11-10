@@ -73,7 +73,7 @@
                                 <td>{{ $sale->net_amount }}</td>
                                 <td>{{ $sale->paid_amount }}</td>
                                 <td>{{ $sale->remaining_amount }}</td>
-                                <td>{{ $sale->payment_type }}</td> 
+                                <td>{{ $sale->payment_type }}</td> // credit or debit
                                 <td>{{ $client->balance }}</td>
                                 <td>{{ $sale->created_at }}</td>
                             </tr>

@@ -26,10 +26,17 @@ use Illuminate\Support\Facades\DB;
 use App\Services\SafeService;
 use App\Services\StockManageService;
 use App\Services\ClientAccountService;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SaleController extends Controller
 {
+    public function index()
+    {
+        $sales = Sale::paginate(10);
+        return view('admin.sales.index', compact('sales'));
+    }
+
+    
     public function create()
     {
         // @TODO: from settings
@@ -59,6 +66,11 @@ class SaleController extends Controller
         return back()->with('success', __('trans.saved_successfully'));
 
     }
+    public function show(string $id)
+    {
+        $sale = Sale::FindOrFail($id);
+        return view('admin.sales.show', compact('sale'));
+    }
 
 
     /**
@@ -67,25 +79,25 @@ class SaleController extends Controller
      * @return void
      */
     // @TODO: moved to ClientAccountBalanceService
-    private function updateClientAccountBalance(Sale $sale): void
-    {
-        $balance = $sale->net_amount - $sale->paid_amount;
-        if($balance != 0){
-            // client account update
-            $sale->client->increment('balance', $balance);
-        }
+    // private function updateClientAccountBalance(Sale $sale): void
+    // {
+    //     $balance = $sale->net_amount - $sale->paid_amount;
+    //     if($balance != 0){
+    //         // client account update
+    //         $sale->client->increment('balance', $balance);
+    //     }
 
-        $sale->clientAccountTransaction()->create([
+    //     $sale->clientAccountTransaction()->create([
             
-            'user_id' => auth()->user()->id, 
-            'client_id' => $sale->client_id,
-            'credit' => $sale->net_amount,
-            'debit' => $sale->paid_amount,
-            'balance' => $balance,
-            'balance_after' => $sale->client->fresh()->balance,
-            'description' => __('trans.sale_remaining, Invoice Number: ' . $sale->invoice_number),
-        ]);
-    }
+    //         'user_id' => auth()->user()->id, 
+    //         'client_id' => $sale->client_id,
+    //         'credit' => $sale->net_amount,
+    //         'debit' => $sale->paid_amount,
+    //         'balance' => $balance,
+    //         'balance_after' => $sale->client->fresh()->balance,
+    //         'description' => __('trans.sale_remaining, Invoice Number: ' . $sale->invoice_number),
+    //     ]);
+    // }
 
     
 
@@ -150,6 +162,14 @@ class SaleController extends Controller
         $sale->paid_amount = $paid;
         $sale->remaining_amount = $remaining;
         $sale->save();
+    }
+
+    public function print(string $id)
+    {
+        $sale = Sale::findOrFail($id);
+        $pdf = Pdf::loadView('admin.sales.invoice', compact('sale'));
+        // return $pdf->download('invoice-' . $sale->invoice_number . '.pdf');
+        return $pdf->stream('invoice-' . $sale->invoice_number . '.pdf');
     }
 
 
