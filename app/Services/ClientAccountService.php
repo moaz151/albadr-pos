@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Client;
+use App\Models\ClientAccountTransaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,5 +33,36 @@ class ClientAccountService
 			'balance_after' => $reference->client->fresh()->balance,
 			'description' => __('trans.sale_remaining, Invoice Number: ' . $reference->invoice_number),
 		]);
+	}
+
+	/**
+	 * Record a manual client payment and update client's balance and ledger.
+	 *
+	 * @param Client $client
+	 * @param float $amount
+	 * @param string|null $description
+	 * @return void
+	 */
+	public function ClientPayment(Client $client, float $amount, string $description = null): void
+	{
+		DB::transaction(function () use ($client, $amount, $description) {
+			$previousBalance = (float) $client->balance;
+			$balanceAfter = $previousBalance - $amount;
+
+			$client->balance = $balanceAfter;
+			$client->save();
+
+			ClientAccountTransaction::create([
+				'client_id' => $client->id,
+				'user_id' => auth()->id(),
+				'description' => $description ?? 'Client payment',
+				'credit' => $previousBalance,
+				'debit' => $amount,
+				'balance' => $previousBalance,
+				'balance_after' => $balanceAfter,
+				'reference_id' => null,
+				'reference_type' => null,
+			]);
+		});
 	}
 }

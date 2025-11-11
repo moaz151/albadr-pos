@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 
 use App\Models\Client;
 use App\Models\Sale;
+use App\Models\ClientAccountTransaction;
 use App\Http\Requests\admin\ClientRequest;
 use App\Enums\ClientStatusEnum;
 use App\Enums\ClientRegistrationEnum;
+use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
@@ -46,11 +48,16 @@ class ClientController extends Controller
     public function show(string $id)
     {
         $client = Client::findOrFail($id);
-        $sales = Sale::where('client_id', $id)
+
+        $clientAccountTransactions = ClientAccountTransaction::where('client_id', $id)
             ->latest('id')
             ->paginate(10);
-        return view('admin.clients.show', compact('client', 'sales'));
+        // $sales = Sale::where('client_id', $id)
+        //     ->latest('id')
+        //     ->paginate(10);
+        return view('admin.clients.show', compact('client', 'clientAccountTransactions'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -69,6 +76,7 @@ class ClientController extends Controller
     public function update(ClientRequest $request, string $id)
     {
         $client = Client::findOrFail($id);
+        
         $client->update($request->validated());
         return redirect()->route('admin.clients.index')->with('success', 'Client updated successfully.');
     }

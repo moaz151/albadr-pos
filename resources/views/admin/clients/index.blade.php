@@ -21,15 +21,15 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="width: 10px">#</th>
-                      <th width="200px">Name</th>
-                      <th width="200px">Email</th>
-                      <th width="200px">Phone</th>
-                      <th width="200px">Address</th>
-                      <th width="200px">Balance</th>
-                      <th width="200px">Status</th>
-                      <th width="200px">Registed Via</th>
-                      <th width="160px">Actions</th>
+                      <th style="width: 1%">#</th>
+                      <th width="15%">Name</th>
+                      <th width="10%">Email</th>
+                      <th width="10%">Phone</th>
+                      <th width="10%">Address</th>
+                      <th width="5%">Balance</th>
+                      <th width="10%">Status</th>
+                      <th width="10%">Registed Via</th>
+                      <th width="10%">Actions</th>
                     </tr>
                   </thead>
                   <tbody>

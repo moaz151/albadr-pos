@@ -15,6 +15,10 @@
                       class="btn btn-sm btn-success">
                         <i class="fas fa-edit"></i> Edit
                     </a>
+                    <a href="{{ route('admin.clients.payments.create', $client->id) }}"
+                      class="btn btn-sm btn-success">
+                        <i class="fas fa-edit"></i> Pay
+                    </a>
                 </div>
             </div>
             <div class="card-body">
@@ -54,28 +58,31 @@
                             <th style="width: 10px">#</th>
                             <th>Invoice Number</th>
                             <th>Total</th>
-                            <th>Discount</th>
-                            <th>Net</th>
                             <th>Paid</th>
-                            <th>Remaining</th>
-                            <th>Payment Type</th>
                             <th>Balance</th>
+                            <th>Balance After</th>
                             <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($sales as $sale)
+                        @forelse ($clientAccountTransactions as $clientAccountTransaction)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $sale->invoice_number }}</td>
-                                <td>{{ $sale->total }}</td>
-                                <td>{{ $sale->discount }}</td>
-                                <td>{{ $sale->net_amount }}</td>
-                                <td>{{ $sale->paid_amount }}</td>
-                                <td>{{ $sale->remaining_amount }}</td>
-                                <td>{{ $sale->payment_type }}</td> // credit or debit
-                                <td>{{ $client->balance }}</td>
-                                <td>{{ $sale->created_at }}</td>
+                                {{-- <td>{{ $clientAccountTransaction->reference_id }}</td> --}}
+                                <td>
+                                    @if ($clientAccountTransaction->reference_type === \App\Models\Sale::class && !empty($clientAccountTransaction->reference_id))
+                                        <a href="{{ route('admin.sales.show', $clientAccountTransaction->reference_id) }}">
+                                            {{ $clientAccountTransaction->reference_id }}
+                                        </a>
+                                    @else
+                                        {{ $clientAccountTransaction->reference_id ?? '-' }}
+                                    @endif
+                                </td>
+                                <td>{{ $clientAccountTransaction->credit }}</td>
+                                <td>{{ $clientAccountTransaction->debit }}</td>
+                                <td>{{ $clientAccountTransaction->balance }}</td>
+                                <td>{{ $clientAccountTransaction->balance_after }}</td>
+                                <td>{{ $clientAccountTransaction->created_at }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -86,7 +93,7 @@
                 </table>
             </div>
             <div class="card-footer clearfix">
-                {{ $sales->links() }}
+                {{ $clientAccountTransactions->links() }}
             </div>
         </div>
     </div>

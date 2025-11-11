@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\ClientAccountTransactionTypeEnum;
 
 class ClientAccountTransaction extends Model
 {

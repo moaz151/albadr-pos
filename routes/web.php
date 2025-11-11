@@ -10,6 +10,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\admin\SaleController;
+use App\Http\Controllers\admin\ClientPaymentController;
 
 Route::redirect('/', 'admin/home');
 
@@ -28,5 +29,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::resource('items', ItemController::class);
         Route::resource('clients', ClientController::class);
         Route::resource('warehouses', WarehouseController::class);
+        // Client Pay 
+        Route::get('clients/{client}/payments/create', [ClientPaymentController::class, 'create'])->name('clients.payments.create');
+        Route::post('clients/{client}/payments', [ClientPaymentController::class, 'store'])->name('clients.payments.store');
     });
 });
