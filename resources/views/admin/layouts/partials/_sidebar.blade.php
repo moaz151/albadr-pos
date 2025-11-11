@@ -104,6 +104,14 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{ route('admin.warehouses.index')}}" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Warehouses
+              </p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
