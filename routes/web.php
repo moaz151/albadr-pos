@@ -10,6 +10,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\admin\SaleController;
+use App\Http\Controllers\admin\ReturnController;
 use App\Http\Controllers\admin\ClientPaymentController;
 
 Route::redirect('/', 'admin/home');
@@ -22,6 +23,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/home', [HomeController::class, 'index'])->name('home');
         Route::resource('sales', SaleController::class);
+        Route::resource('returns', ReturnController::class);
         Route::get('sales/{id}/print', [SaleController::class, 'print'])->name('sales.print');
         Route::resource('users', UserController::class);
         Route::resource('categories', CategoryController::class);

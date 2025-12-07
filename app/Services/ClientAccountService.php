@@ -36,8 +36,6 @@ class ClientAccountService
 	}
 
 	/**
-	 * Record a manual client payment and update client's balance and ledger.
-	 *
 	 * @param Client $client
 	 * @param float $amount
 	 * @param string|null $description

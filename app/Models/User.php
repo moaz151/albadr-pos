@@ -4,9 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Enums\userStatusEnum;
+use App\Enums\SaleTypeEnum;
+use App\Enums\UserStatusEnum;
 use App\Models\Sale;
 
 class User extends Authenticatable
@@ -47,7 +49,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'status' => userStatusEnum::class,
+            'status' => UserStatusEnum::class,
         ];
     }
 
@@ -56,8 +58,13 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function sales()
+    public function sales(): User|HasMany
     {
-        return $this->hasMany(Sale::class);
+        return $this->hasMany(Sale::class)->where('type', SaleTypeEnum::sale->value);
+    }
+
+    public function returns(): User|HasMany
+    {
+        return $this->hasMany(Sale::class)->where('type', SaleTypeEnum::return->value);
     }
 }

@@ -40,7 +40,7 @@
                       <td>{{$loop->iteration}}</td>
                       <td>{{ $item->name }}</td>
                       <td>{{ $item->item_code }}</td>
-                      <td>{{ $item->quantity }}</td>
+                      <td>{{ $item->warehouses()->sum('quantity') }}</td>
                       <td>{{ $item->price }}</td>
                       <td>{{ $item->category_id }}</td>
                       <td>{{ $item->unit_id }}</td>

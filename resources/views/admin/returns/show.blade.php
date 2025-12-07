@@ -9,13 +9,13 @@
         @include('admin.layouts.partials._flash')
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Sale</h3>
+                <h3 class="card-title">Sale Return</h3>
                 <div class="card-tools">
-                    <a href="{{ route('admin.sales.print', $sale->id) }}" 
+                    {{-- <a href="{{ route('admin.returns.print', $return->id) }}" 
                       class="btn btn-sm btn-primary">
                         <i class="fas fa-print"></i> Print Invoice
-                    </a>
-                    <a href="{{ route('admin.sales.index') }}" 
+                    </a> --}}
+                    <a href="{{ route('admin.returns.index') }}" 
                       class="btn btn-sm btn-secondary">
                         <i class="fas fa-list"></i> Back to list
                     </a>
@@ -26,26 +26,31 @@
                     <div class="col-md-6">
                         <table class="table table-bordered">
                             <tbody>
-                                <tr><th width="220">Invoice #</th><td>{{ $sale->invoice_number }}</td></tr>
-                                <tr><th>Client</th><td>{{ optional($sale->client)->name }}</td></tr>
-                                <tr><th>Payment Type</th><td><span class="badge badge-{{ $sale->payment_type->style() }}">{{ $sale->payment_type->label() }}</span></td></tr>
-                                <tr><th>Warehouse</th><td>{{ optional($sale->warehouse)->name }}</td></tr>
-                                <tr><th>Cash Safe</th><td>{{ optional($sale->safe)->name }}</td></tr>
+                                <tr><th width="220">Invoice #</th><td>{{ $return->invoice_number }}</td></tr>
+                                <tr><th>Client</th><td>{{ optional($return->client)->name }}</td></tr>
+                                <tr>
+                                    <th>Payment Type</th>
+                                    <td>
+                                        <span class="badge badge-{{ $return->type->style() }}">{{ $return->type->label() }}</span>
+                                    </td>
+                                </tr>
+                                <tr><th>Warehouse</th><td>{{ optional($return->warehouse)->name }}</td></tr>
+                                <tr><th>Cash Safe</th><td>{{ optional($return->safe)->name }}</td></tr>
                                 <tr><th>User</th><td>{{ optional(auth()->user())->full_name }}</td></tr>
-                                <tr><th>Date</th><td>{{ $sale->created_at }}</td></tr>
+                                <tr><th>Date</th><td>{{ $return->created_at }}</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="col-md-6">
                         <table class="table table-bordered">
                             <tbody>
-                                <tr><th width="220">Total</th><td>{{ $sale->total }}</td></tr>
-                                <tr><th>Discount</th><td>{{ $sale->discount }}</td></tr>
-                                <tr><th>Discount Type</th><td>{{ $sale->discount_type->label() }}</td></tr>
-                                <tr><th>Shipping</th><td>{{ $sale->shipping_cost }}</td></tr>
-                                <tr><th>Net</th><td>{{ $sale->net_amount }}</td></tr>
-                                <tr><th>Paid</th><td>{{ $sale->paid_amount }}</td></tr>
-                                <tr><th>Remaining</th><td>{{ $sale->remaining_amount }}</td></tr>
+                                <tr><th width="220">Total</th><td>{{ $return->total }}</td></tr>
+                                <tr><th>Discount</th><td>{{ $return->discount }}</td></tr>
+                                <tr><th>Discount Type</th><td>{{ $return->type->label() }}</td></tr>
+                                <tr><th>Shipping</th><td>{{ $return->shipping_cost }}</td></tr>
+                                <tr><th>Net</th><td>{{ $return->net_amount }}</td></tr>
+                                <tr><th>Paid</th><td>{{ $return->paid_amount }}</td></tr>
+                                <tr><th>Remaining</th><td>{{ $return->remaining_amount }}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -70,7 +75,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($sale->items as $item)
+                        @forelse ($return->items as $item)
                             <tr>
                                 
                                 <td>{{ $loop->iteration }}</td>
@@ -82,7 +87,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">No items found for this sale.</td>
+                                <td colspan="6" class="text-center">No items found for this return.</td>
                             </tr>
                         @endforelse
                     </tbody>

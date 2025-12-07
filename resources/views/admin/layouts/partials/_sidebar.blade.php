@@ -35,6 +35,7 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
+          
           <li class="nav-item @if(request()->is('admin/sales/*')) menu-open  @endif ">
             <a href="" class="nav-link active">
               <i class="nav-icon fas fa-chart-line"></i>
@@ -54,6 +55,36 @@
                 <a href="{{ route('admin.sales.index') }}" class="nav-link @if(request()->routeIs('admin.sales.index')) active  @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Sales</p>
+                </a>
+              </li>
+              {{-- <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Inactive Page</p>
+                </a>
+              </li> --}}
+            </ul>
+          </li>
+          {{-- Returns Section --}}
+          <li class="nav-item @if(request()->is('admin/return/*')) menu-open  @endif ">
+            <a href="" class="nav-link active">
+              <i class="nav-icon fas fa-chart-line"></i>
+              <p>
+                @lang('trans.returns')
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.returns.create') }}" class="nav-link @if(request()->routeIs('admin.returns.create')) active  @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Create Sale Return</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.returns.index') }}" class="nav-link @if(request()->routeIs('admin.returns.index')) active  @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Returns</p>
                 </a>
               </li>
               {{-- <li class="nav-item">
@@ -106,7 +137,7 @@
           </li>
           <li class="nav-item">
             <a href="{{ route('admin.warehouses.index')}}" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-columns"></i>
               <p>
                 Warehouses
               </p>

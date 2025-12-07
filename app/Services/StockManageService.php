@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Enums\WarehouseTransactionTypeEnum;
+use Illuminate\Support\Facades\DB;
+use App\Models\Warehouse;
 
 class StockManageService
 {
@@ -30,6 +32,46 @@ class StockManageService
             'quantity' => $quantity * -1,
             'quantity_after' => $item->warehouses()->where('itemable_id', $warehouseId)->first()->pivot->quantity,
             'description' => 'Stock decreased from warehouse ID: ' . $warehouseId . ($reference ? ', reference ID: ' . $reference->id : ''),
+        ]);
+    }
+
+    public function increaseStock($item, $warehouseId, $quantity, $reference = null)
+    {
+        $stock = $item->warehouses()->where('itemable_id', $warehouseId)->first();
+        if (!$stock) {
+            $this->initStock($item, $warehouseId, 0);
+        }
+        $item->warehouses()->where('itemable_id', $warehouseId)->increment('quantity', $quantity);
+        $item->warehouseTransactions()->create([
+            'transaction_type' => WarehouseTransactionTypeEnum::add,
+            'quantity' => $quantity,
+            'quantity_after' => $item->warehouses()->where('itemable_id', $warehouseId)->first()->pivot->quantity,
+            'description' => 'Stock increased at warehouse ID: ' . $warehouseId . ($reference ? ', Reference ID: ' . $reference->id : ''),
+        ]);
+    }
+
+    public function adjustStock($item, $warehouseId, $newQuantity, $description = null)
+    {
+        $stock = $item->warehouses()->where('itemable_id', $warehouseId)->first();
+        $oldQuantity = $stock ? $stock->pivot->quantity : 0;
+        
+        if (!$stock) {
+            $item->warehouses()->attach($warehouseId, ['quantity' => $newQuantity]);
+        } else {
+            // Update pivot table directly for morphToMany relationship
+            DB::table('itemables')
+                ->where('item_id', $item->id)
+                ->where('itemable_id', $warehouseId)
+                ->where('itemable_type', Warehouse::class)
+                ->update(['quantity' => $newQuantity]);
+        }
+        
+        $quantityDifference = $newQuantity - $oldQuantity;
+        $item->warehouseTransactions()->create([
+            'transaction_type' => WarehouseTransactionTypeEnum::adjust,
+            'quantity' => $quantityDifference,
+            'quantity_after' => $newQuantity,
+            'description' => $description ?? 'Stock adjusted manually for warehouse ID: ' . $warehouseId . ' (from ' . $oldQuantity . ' to ' . $newQuantity . ')',
         ]);
     }
 }

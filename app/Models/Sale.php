@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\SaleTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\PaymentTypeEnum;
 use App\Enums\DiscountTypeEnum;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Sale extends Model 
 {
@@ -13,11 +17,10 @@ class Sale extends Model
     public $timestamps = true;
     protected $fillable = array(
         'total', 'discount', 'discount_type', 'shipping_cost', 'net_amount', 'paid_amount', 'remaining_amount',
-        'invoice_number', 'payment_type', 'client_id', 'safe_id', 'user_id', 'warehouse_id');
+        'invoice_number', 'payment_type', 'client_id', 'safe_id', 'warehouse_id', 'user_id', 'type');
 
     protected $casts = [
-        'payment_type' => PaymentTypeEnum::class,
-        'discount_type' => DiscountTypeEnum::class,
+        'type' => SaleTypeEnum::class,
     ];
 
    

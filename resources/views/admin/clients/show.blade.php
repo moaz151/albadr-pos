@@ -68,16 +68,7 @@
                         @forelse ($clientAccountTransactions as $clientAccountTransaction)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                {{-- <td>{{ $clientAccountTransaction->reference_id }}</td> --}}
-                                <td>
-                                    @if ($clientAccountTransaction->reference_type === \App\Models\Sale::class && !empty($clientAccountTransaction->reference_id))
-                                        <a href="{{ route('admin.sales.show', $clientAccountTransaction->reference_id) }}">
-                                            {{ $clientAccountTransaction->reference_id }}
-                                        </a>
-                                    @else
-                                        {{ $clientAccountTransaction->reference_id ?? '-' }}
-                                    @endif
-                                </td>
+                                <td>{{ $clientAccountTransaction->reference_id }}</td>
                                 <td>{{ $clientAccountTransaction->credit }}</td>
                                 <td>{{ $clientAccountTransaction->debit }}</td>
                                 <td>{{ $clientAccountTransaction->balance }}</td>

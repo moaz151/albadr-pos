@@ -29,38 +29,41 @@ use App\Services\StockManageService;
 use App\Services\ClientAccountService;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-class SaleController extends Controller
+class ReturnController extends Controller
 {
     public function index()
     {
-        $sales = Sale::paginate(10);
-        return view('admin.sales.index', compact('sales'));
+        $returns = Sale::where('type', SaleTypeEnum::return->value)->paginate(10);
+        return view('admin.returns.index', compact('returns'));
     }
 
     
     public function create()
     {
-        // @TODO: from settings
-        $clients = Client::Where('status', ClientStatusEnum::active)->get();
+        $clients = Client::all();
+        //todo : from settings
         $safes = Safe::where('status', SafeStatusEnum::active)->get();
         $units = Unit::where('status', UnitStatusEnum::active)->get();
-        $warehouses = Warehouse::all();
         $items = Item::where('status', ItemStatusEnum::active)->get();
+        $warehouses = Warehouse::all();
         $discountTypes = DiscountTypeEnum::labels();
-        return view('admin.sales.create',
-         compact('clients', 'safes', 'units', 'items', 'discountTypes', 'warehouses'));
+        return view(
+            'admin.returns.create',
+            compact('clients', 'safes', 'units', 'items', 'discountTypes', 'warehouses')
+        );
     }
 
     public function store(SaleRequest $request)
     {
         DB::beginTransaction();
         $data = $request->validated();
-        $data['type'] = SaleTypeEnum::sale->value;
-        $sale = auth()->user()->sales()->create($data);
+        $data['type'] = SaleTypeEnum::return->value;
+        $sale = auth()->user()->returns()->create($data);
         $total = $this->attachItems($request, $sale);
         $this->updateSaleTotals($total, $request, $sale);
-        (new SafeService())->inTransaction($sale, $sale->paid_amount, 'Sale Payment, Invoice #: ' . $sale->invoice_number);
-        (new ClientAccountService())->handleClientBalance($sale, $sale->net_amount, $sale->paid_amount, $sale->invoice_number);
+        (new SafeService())->outTransaction($sale, $sale->paid_amount, 'Sale Return Payment, Invoice #: ' . $sale->invoice_number);
+        // (new ClientAccountService())->handleClientBalance($sale, $sale->net_amount, $sale->paid_amount, $sale->invoice_number);
+        $this->updateClientAccountBalance($sale);
         // client account update
         DB::commit();
         return back()->with('success', __('trans.saved_successfully'));
@@ -68,8 +71,8 @@ class SaleController extends Controller
     }
     public function show(string $id)
     {
-        $sale = Sale::FindOrFail($id);
-        return view('admin.sales.show', compact('sale'));
+        $return = Sale::FindOrFail($id);
+        return view('admin.returns.show', compact('return'));
     }
 
 
@@ -79,25 +82,27 @@ class SaleController extends Controller
      * @return void
      */
     // @TODO: moved to ClientAccountBalanceService
-    // private function updateClientAccountBalance(Sale $sale): void
-    // {
-    //     $balance = $sale->net_amount - $sale->paid_amount;
-    //     if($balance != 0){
-    //         // client account update
-    //         $sale->client->increment('balance', $balance);
-    //     }
+    private function updateClientAccountBalance(Sale $sale): void
+    {
+        $credit = $sale->paid_amount;
+        $debit = $sale->net_amount;
+        $balance = $credit - $debit;
+        if($balance != 0){
+            // client account update
+            $sale->client->increment('balance', $balance);
+        }
 
-    //     $sale->clientAccountTransaction()->create([
+        $sale->clientAccountTransaction()->create([
             
-    //         'user_id' => auth()->user()->id, 
-    //         'client_id' => $sale->client_id,
-    //         'credit' => $sale->net_amount,
-    //         'debit' => $sale->paid_amount,
-    //         'balance' => $balance,
-    //         'balance_after' => $sale->client->fresh()->balance,
-    //         'description' => __('trans.sale_remaining, Invoice Number: ' . $sale->invoice_number),
-    //     ]);
-    // }
+            'user_id' => auth()->user()->id, 
+            'client_id' => $sale->client_id,
+            'credit' => $credit,
+            'debit' => $debit,
+            'balance' => $balance,
+            'balance_after' => $sale->client->fresh()->balance,
+            'description' => __('trans.sale_Return_remaining, Invoice Number: ' . $sale->invoice_number),
+        ]);
+    }
 
     
 
@@ -109,7 +114,6 @@ class SaleController extends Controller
     private function attachItems(SaleRequest $request, Sale $sale): float
     {
         $total = 0;
-
         foreach($request->items as $id => $item){
             $queriedItem = Item::find($id);
             $totalPrice = $queriedItem->price * $item['qty'];
@@ -123,7 +127,7 @@ class SaleController extends Controller
             ]);
             // Stock Update
             // $queriedItem->decrement('quantity', $item['qty']);
-            (new StockManageService())->decreaseStock($queriedItem, $request->warehouse_id, $item['qty'], $sale);
+            (new StockManageService())->increaseStock($queriedItem, $request->warehouse_id, $item['qty'], $sale);
             $total += $totalPrice;
         }
         return $total;

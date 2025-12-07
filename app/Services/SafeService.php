@@ -35,7 +35,7 @@ class SafeService
         DB::transaction(function () use($reference, $amount, $type, $description) {
             $safe = $reference->safe()->LockForUpdate()->FirstOrFail();
 
-            if($type = SafeTransactionTypeEnum::in){
+            if($type === SafeTransactionTypeEnum::in){
                 $safe->balance += $amount;
             }
             else {
@@ -46,7 +46,7 @@ class SafeService
 
              $reference->safeTransaction()->create([
                  'user_id' => Auth::user()->id,
-                 'type' => $type, // in or out
+                 'type' => $type->value, // in or out
                  'safe_id' => $safe->id,
                  'amount' => $amount,
                  'balance_after' => $safe->fresh()->balance,
