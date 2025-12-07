@@ -12,6 +12,7 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\admin\SaleController;
 use App\Http\Controllers\admin\ReturnController;
 use App\Http\Controllers\admin\ClientPaymentController;
+use App\Http\Controllers\Admin\Settings\GeneralSettingsController;
 
 Route::redirect('/', 'admin/home');
 
@@ -34,5 +35,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         // Client Pay 
         Route::get('clients/{client}/payments/create', [ClientPaymentController::class, 'create'])->name('clients.payments.create');
         Route::post('clients/{client}/payments', [ClientPaymentController::class, 'store'])->name('clients.payments.store');
+
+        Route::group(['prefix' => 'settings'], function () {
+            Route::get('general', [GeneralSettingsController::class, 'view'])->name('settings.general.view');
+            Route::put('general', [GeneralSettingsController::class, 'update'])->name('settings.general.update');
+        });
     });
 });

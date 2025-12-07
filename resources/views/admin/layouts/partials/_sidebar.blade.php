@@ -143,6 +143,23 @@
               </p>
             </a>
           </li>
+          <li class="nav-item @if(request()->is('admin/settings/*')) menu-open @endif">
+            <a href="#" class="nav-link active">
+                <i class="nav-icon fas fa-chart-line"></i>
+                <p>
+                    @lang('trans.settings')
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('admin.settings.general.view') }}" class="nav-link @if(request()->routeIs('admin.settings.general.view')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>General Settings</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
