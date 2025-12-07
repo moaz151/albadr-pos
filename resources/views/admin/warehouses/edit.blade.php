@@ -65,12 +65,63 @@
                                           name="description" 
                                           rows="4" 
                                           placeholder="Enter warehouse description">{{ old('description', $warehouse->description) }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
+                                          @error('description')
+                                          <div class="invalid-feedback">{{ $message }}</div>
+                                          @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+{{-- ############################################################################################################################## --}}
+                                <h5 class="mb-3">Items in Warehouse</h5>
+                                
+                                @if($warehouse->items->count() > 0)
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 10px">#</th>
+                                                    <th>Item Name</th>
+                                                    <th>Item Code</th>
+                                                    <th>Category</th>
+                                                    <th>Unit</th>
+                                                    <th>Current Quantity</th>
+                                                    <th>New Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($warehouse->items as $item)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item->name }}</td>
+                                                        <td>{{ $item->item_code }}</td>
+                                                        <td>{{ $item->category->name ?? 'N/A' }}</td>
+                                                        <td>{{ $item->unit->name ?? 'N/A' }}</td>
+                                                        <td>
+                                                            <span class="badge badge-info">{{ number_format($item->pivot->quantity, 2) }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" 
+                                                                   name="item_quantities[{{ $item->id }}]" 
+                                                                   value="{{ old('item_quantities.' . $item->id, $item->pivot->quantity) }}" 
+                                                                   class="form-control form-control-sm" 
+                                                                   step="0.01" 
+                                                                   min="0"
+                                                                   style="width: 120px;">
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i> No items found in this warehouse.
+                                    </div>
+                                @endif
+                    
+{{-- ############################################################################################################################## --}}
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary">

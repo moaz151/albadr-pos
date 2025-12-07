@@ -14,8 +14,8 @@ enum WarehouseTransactionTypeEnum: int
     {
         return match($this) {
             WarehouseTransactionTypeEnum::init => __('trans.initial'),
-            WarehouseTransactionTypeEnum::addn => __('trans.addition'),
-            WarehouseTransactionTypeEnum::seb => __('trans.removal'),
+            WarehouseTransactionTypeEnum::add => __('trans.addition'),
+            WarehouseTransactionTypeEnum::sub => __('trans.removal'),
             WarehouseTransactionTypeEnum::adjust => __('trans.adjustment'),
         };
     }

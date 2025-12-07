@@ -58,12 +58,26 @@ class StockManageService
         if (!$stock) {
             $item->warehouses()->attach($warehouseId, ['quantity' => $newQuantity]);
         } else {
-            // Update pivot table directly for morphToMany relationship
-            DB::table('itemables')
+            // Get the itemable_type directly from database
+            $pivotRecord = DB::table('itemables')
                 ->where('item_id', $item->id)
                 ->where('itemable_id', $warehouseId)
-                ->where('itemable_type', Warehouse::class)
-                ->update(['quantity' => $newQuantity]);
+                ->first();
+            
+            if ($pivotRecord) {
+                // Update using the exact itemable_type from database
+                DB::table('itemables')
+                    ->where('item_id', $item->id)
+                    ->where('itemable_id', $warehouseId)
+                    ->where('itemable_type', $pivotRecord->itemable_type)
+                    ->update(['quantity' => $newQuantity]);
+            } else {
+                // Fallback: update without itemable_type (shouldn't happen but just in case)
+                DB::table('itemables')
+                    ->where('item_id', $item->id)
+                    ->where('itemable_id', $warehouseId)
+                    ->update(['quantity' => $newQuantity]);
+            }
         }
         
         $quantityDifference = $newQuantity - $oldQuantity;

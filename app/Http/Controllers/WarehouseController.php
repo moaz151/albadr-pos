@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Warehouse;
+use App\Models\Item;
 use App\Enums\WarehouseStatusEnum;
 use App\Http\Requests\admin\WarehouseRequest;
+use App\Services\StockManageService;
+use Illuminate\Support\Facades\DB;
 
 class WarehouseController extends Controller
 {
@@ -51,7 +54,7 @@ class WarehouseController extends Controller
      */
     public function edit(string $id)
     {
-        $warehouse = Warehouse::findOrFail($id);
+        $warehouse = Warehouse::with('items.unit', 'items.category')->findOrFail($id);
         $warehouseStatus = WarehouseStatusEnum::labels();
         return view('admin.warehouses.edit', compact('warehouse', 'warehouseStatus'));
     }
@@ -62,9 +65,40 @@ class WarehouseController extends Controller
     public function update(WarehouseRequest $request, string $id)
     {
         $warehouse = Warehouse::findOrFail($id);
-        $warehouse->update($request->validated());
-        return redirect()->route('admin.warehouses.index')
-            ->with('success', 'Warehouse updated successfully.');
+        
+        DB::beginTransaction();
+        try {
+            // Update warehouse basic information
+            $warehouse->update($request->validated());
+            
+            // Update item quantities if provided
+            if ($request->has('item_quantities')) {
+                $stockService = new StockManageService();
+                $itemQuantities = $request->input('item_quantities', []);
+                
+                foreach ($itemQuantities as $itemId => $newQuantity) {
+                    $item = Item::find($itemId);
+                    if ($item) {
+                        $newQuantity = floatval($newQuantity);
+                        $stockService->adjustStock(
+                            $item, 
+                            $warehouse->id, 
+                            $newQuantity,
+                            'Quantity adjusted from warehouse edit page'
+                        );
+                    }
+                }
+            }
+            
+            DB::commit();
+            return redirect()->route('admin.warehouses.index')
+                ->with('success', 'Warehouse updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to update warehouse: ' . $e->getMessage());
+        }
     }
 
     /**
