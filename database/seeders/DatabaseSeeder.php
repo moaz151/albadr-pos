@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             ClientsSeeder::class,
             UnitsSeeder::class,
             CategoriesSeeder::class,
-            // ItemsSeeder::class,
+            ItemsSeeder::class,
             SafesSeeder::class,
         ]);
     }
