@@ -124,9 +124,10 @@
                                 <div class="form-group">
                                     <label for="qty">@lang('trans.qty')</label>
                                     <input
-                                        type="text"
+                                        type="number"
                                         class="form-control"
                                         id="qty"
+                                        step="{{ $advancedSettings->allow_decimal_quantities ? '0.01' : '1' }}"
                                         placeholder="@lang('trans.qty')">
                                 </div>
                             </div>
@@ -176,7 +177,7 @@
                                                 <input type="hidden" name="items[{{ $item['id'] }}][price]" value="{{ $item['price'] }}">
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control" name="items[{{ $item['id'] }}][qty]" value="{{ $item['qty'] }}">
+                                                <input type="number" class="form-control" name="items[{{ $item['id'] }}][qty]" value="{{ $item['qty'] }}" step="{{ $advancedSettings->allow_decimal_quantities ? '0.01' : '1' }}">
                                             </td>
                                             <td>
                                                 {{ $item['itemTotal'] }}
@@ -254,10 +255,10 @@
                                         <label for="payment_type{{\App\Enums\PaymentTypeEnum::cash}}" class="form-check-label">{{ \App\Enums\PaymentTypeEnum::cash->label() }}</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" id="payment_type{{\App\Enums\PaymentTypeEnum::debt}}" type="radio" name="payment_type"
-                                               value="{{\App\Enums\PaymentTypeEnum::debt}}"
-                                               @if(old('payment_type') == \App\Enums\PaymentTypeEnum::debt->value) checked @endif>
-                                        <label for="payment_type{{\App\Enums\PaymentTypeEnum::debt}}" class="form-check-label">{{ \App\Enums\PaymentTypeEnum::debt->label() }}</label>
+                                        <input class="form-check-input" id="payment_type{{\App\Enums\PaymentTypeEnum::debit}}" type="radio" name="payment_type"
+                                               value="{{\App\Enums\PaymentTypeEnum::debit}}"
+                                               @if(old('payment_type') == \App\Enums\PaymentTypeEnum::debit->value) checked @endif>
+                                        <label for="payment_type{{\App\Enums\PaymentTypeEnum::debit}}" class="form-check-label">{{ \App\Enums\PaymentTypeEnum::debit->label() }}</label>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
@@ -308,6 +309,19 @@
             var itemQty = qnt.val();
             let notes = $("#notes")
             let itemNotes = notes.val();
+            
+            // Validate decimal quantities if not allowed (befor Insert to the table)
+            @if(!$advancedSettings->allow_decimal_quantities)
+            if (itemQty && itemQty % 1 !== 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Quantities must be whole numbers only.',
+                })
+                return;
+            }
+            @endif
+            
             let itemTotal = itemPrice * itemQty;
 
             // validate inputs : item chosen , qnt , qnt > 0 , qnt <= available qnt
@@ -339,7 +353,7 @@
                 '<td>' + itemPrice +
                 '<input type="hidden" name="items['+itemID+'][price]" value="'+itemPrice+'">' +
                 '</td>' +
-                '<td><input type="number" class="form-control" name="items['+itemID+'][qty]" value="'+itemQty+'">' +
+                '<td><input type="number" class="form-control" name="items['+itemID+'][qty]" value="'+itemQty+'" step="{{ $advancedSettings->allow_decimal_quantities ? "0.01" : "1" }}">' +
                 '</td>' +
                 '<td>' + itemTotal +
                 '<input type="hidden" name="items['+itemID+'][itemTotal]" value="'+itemTotal+'">' +
@@ -379,6 +393,21 @@
             $("#total_price").text(totalPrice);
             calculateDiscount()
             $(this).closest('tr').remove();
+        })
+
+        // Validate quantity changes in table (After Insert to the table)
+        $(document).on('change', 'input[name*="[qty]"]', function (e) {
+            @if(!$advancedSettings->allow_decimal_quantities)
+            let qtyValue = parseFloat($(this).val());
+            if (qtyValue && qtyValue % 1 !== 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Quantities must be whole numbers only.',
+                })
+                $(this).val(Math.floor(qtyValue));
+            }
+            @endif
         })
 
 

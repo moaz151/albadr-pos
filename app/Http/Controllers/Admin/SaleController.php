@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\SafeService;
 use App\Services\StockManageService;
 use App\Services\ClientAccountService;
+use App\Settings\AdvancedSettings;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class SaleController extends Controller
@@ -38,7 +39,7 @@ class SaleController extends Controller
     }
 
     
-    public function create()
+    public function create(AdvancedSettings $advancedSettings)
     {
         // @TODO: from settings
         $clients = Client::Where('status', ClientStatusEnum::active)->get();
@@ -48,7 +49,7 @@ class SaleController extends Controller
         $items = Item::where('status', ItemStatusEnum::active)->get();
         $discountTypes = DiscountTypeEnum::labels();
         return view('admin.sales.create',
-         compact('clients', 'safes', 'units', 'items', 'discountTypes', 'warehouses'));
+         compact('clients', 'safes', 'units', 'items', 'discountTypes', 'warehouses', 'advancedSettings'));
     }
 
     public function store(SaleRequest $request)
@@ -150,7 +151,7 @@ class SaleController extends Controller
     {
         $discount = $this->calculateDiscount($request, $total);
         $net = $total - $discount;
-        if($request->payment_type == PaymentTypeEnum::debt->value){
+        if($request->payment_type == PaymentTypeEnum::debit->value){
             $paid = $request->payment_amount;
         }else {
             $paid = $net;

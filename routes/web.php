@@ -13,6 +13,7 @@ use App\Http\Controllers\admin\SaleController;
 use App\Http\Controllers\admin\ReturnController;
 use App\Http\Controllers\admin\ClientPaymentController;
 use App\Http\Controllers\Admin\Settings\GeneralSettingsController;
+use App\Http\Controllers\Admin\Settings\AdvancedSettingsController;
 
 Route::redirect('/', 'admin/home');
 
@@ -39,6 +40,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::group(['prefix' => 'settings'], function () {
             Route::get('general', [GeneralSettingsController::class, 'view'])->name('settings.general.view');
             Route::put('general', [GeneralSettingsController::class, 'update'])->name('settings.general.update');
+            Route::get('advanced', [AdvancedSettingsController::class, 'view'])->name('settings.advanced.view');
+            Route::put('advanced', [AdvancedSettingsController::class, 'update'])->name('settings.advanced.update');
         });
     });
 });

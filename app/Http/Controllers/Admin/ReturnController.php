@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\SafeService;
 use App\Services\StockManageService;
 use App\Services\ClientAccountService;
+use App\Settings\AdvancedSettings;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReturnController extends Controller
@@ -38,7 +39,7 @@ class ReturnController extends Controller
     }
 
     
-    public function create()
+    public function create(AdvancedSettings $advancedSettings)
     {
         $clients = Client::all();
         //todo : from settings
@@ -49,7 +50,7 @@ class ReturnController extends Controller
         $discountTypes = DiscountTypeEnum::labels();
         return view(
             'admin.returns.create',
-            compact('clients', 'safes', 'units', 'items', 'discountTypes', 'warehouses')
+            compact('clients', 'safes', 'units', 'items', 'discountTypes', 'warehouses', 'advancedSettings')
         );
     }
 
@@ -154,7 +155,7 @@ class ReturnController extends Controller
     {
         $discount = $this->calculateDiscount($request, $total);
         $net = $total - $discount;
-        if($request->payment_type == PaymentTypeEnum::debt->value){
+        if($request->payment_type == PaymentTypeEnum::debit->value){
             $paid = $request->payment_amount;
         }else {
             $paid = $net;

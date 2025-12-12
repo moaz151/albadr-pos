@@ -5,14 +5,14 @@ namespace App\Enums;
 enum PaymentTypeEnum: int
 {
     case cash = 1;
-    case debt = 2;
+    case debit = 2;
 
 
     public function label(): string
     {
         return match($this) {
             PaymentTypeEnum::cash => __('trans.cash'),
-            PaymentTypeEnum::debt => __('trans.debt'),
+            PaymentTypeEnum::debit => __('trans.debit'),
         };
     }
 
@@ -20,7 +20,7 @@ enum PaymentTypeEnum: int
     {
         return match($this) {
             PaymentTypeEnum::cash => 'success',
-            PaymentTypeEnum::debt => 'danger',
+            PaymentTypeEnum::debit => 'danger',
         };
     }
 

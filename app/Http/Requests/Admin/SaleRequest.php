@@ -3,10 +3,9 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-
-use \App\Enums\PaymentTypeEnum;
 use Illuminate\Validation\Rule;
-
+use App\Enums\PaymentTypeEnum;
+use App\Settings\AdvancedSettings;
 
 class SaleRequest extends FormRequest
 {
@@ -25,6 +24,14 @@ class SaleRequest extends FormRequest
      */
     public function rules(): array
     {
+        $advancedSettings = app(AdvancedSettings::class);
+        $quantityRules = ['required', 'numeric'];
+        
+        // If decimal quantities are not allowed, add integer validation
+        if (!$advancedSettings->allow_decimal_quantities) {
+            $quantityRules = ['required', 'numeric','min:1','integer'];
+        }
+
         return [
             'client_id' => ['required', 'exists:clients,id'],
             'sale_date' => ['required', 'date'],
@@ -34,11 +41,27 @@ class SaleRequest extends FormRequest
             'discount_type' => ['required'],
             'discount_value' => ['nullable', 'numeric'],
             'payment_type' => ['required', Rule::enum(PaymentTypeEnum::class)],
-            'payment_amount' => ['required_if:payment_type,'.PaymentTypeEnum::debt->value,'numeric'],
+            'payment_amount' => ['required_if:payment_type,'.PaymentTypeEnum::debit->value,'numeric'],
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'exists:items,id'],
-            'items.*.qty' => ['required', 'numeric', 'min:1'],
+            'items.*.qty' => $quantityRules,
             'items.*.notes' => ['nullable', 'string'],
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        $advancedSettings = app(AdvancedSettings::class);
+        
+        return [
+            'items.*.qty.integer' => $advancedSettings->allow_decimal_quantities 
+                ? '' 
+                : 'Quantities must be whole numbers only.',
         ];
     }
 }

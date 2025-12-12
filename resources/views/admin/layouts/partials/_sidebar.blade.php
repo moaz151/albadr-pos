@@ -158,6 +158,12 @@
                         <p>General Settings</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.settings.advanced.view') }}" class="nav-link @if(request()->routeIs('admin.settings.advanced.view')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Advanced Settings</p>
+                    </a>
+                </li>
             </ul>
         </li>
         </ul>
