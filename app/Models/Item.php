@@ -61,7 +61,7 @@ class Item extends Model
 
     public function orders()
     {
-        return $this->belongsToMany('App\Models\Order', 'item_orders')->withPivot('unit_price', 'quantity', 'total_price');
+        return $this->belongsToMany('App\Models\Order', 'order_items')->withPivot('unit_price', 'quantity', 'total_price');
     }
 
     public function mainPhoto()

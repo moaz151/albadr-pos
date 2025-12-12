@@ -37,4 +37,9 @@ class Client extends User
         return $this->hasMany(ClientAccountTransaction::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
 }

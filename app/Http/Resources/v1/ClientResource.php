@@ -20,6 +20,12 @@ class ClientResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'address' => $this->address,
+            'balance' => $this->balance,
+            'status' => [
+                'value' => $this->status->value,
+                'label' => $this->status->label(),
+            ],
+            'orders_count' => $this->whenLoaded('orders') ? $this->orders->count() : $this->orders()->count(),
         ];
     }
 }

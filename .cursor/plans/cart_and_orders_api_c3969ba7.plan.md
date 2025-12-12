@@ -1,106 +1,91 @@
 ---
-name: Advanced Settings & Permissions
-overview: Implement Advanced POS Settings using Spatie Laravel Settings, integrate Spatie Laravel Permissions for role-based access control, and enhance User Management with role assignment capabilities.
+name: Cart and Orders API
+overview: Implement a complete e-commerce Cart and Orders API system for clients, including product browsing, cart management, checkout flow, order tracking, and customer profile management. Orders automatically convert to Sale invoices when delivered.
 todos:
-  - id: advanced-settings-class
-    content: "Create AdvancedSettings class with properties: allow_decimal_quantities (bool), default_discount_method (string), payment_methods (array)"
+  - id: create-cart-models
+    content: Create Cart and CartItem models with migrations and relationships
+    status: pending
+  - id: create-order-status-enum
+    content: Create OrderStatusEnum with confirmed, processing, shipped, delivered statuses
+    status: pending
+  - id: update-order-model
+    content: Update Order model with client relationship, shipping fields, and sale relationship
     status: completed
-  - id: advanced-settings-migration
-    content: Create settings migration for advanced settings with default values
+  - id: enhance-item-controller
+    content: Enhance ItemController with category filtering and search functionality
     status: completed
-    dependencies:
-      - advanced-settings-class
-  - id: advanced-settings-request
-    content: Create AdvancedSettingsRequest with validation rules
-    status: completed
-  - id: advanced-settings-controller
-    content: Implement view() and update() methods in AdvancedSettingsController
-    status: completed
-    dependencies:
-      - advanced-settings-class
-      - advanced-settings-request
-  - id: advanced-settings-view
-    content: Create advanced.blade.php view with toggle, radio buttons, and checkboxes
-    status: completed
-  - id: register-advanced-settings
-    content: Register AdvancedSettings in config/settings.php and add routes in web.php
+  - id: create-cart-controller
+    content: Create CartController with add, update, remove, clear, and getTotal methods
     status: completed
     dependencies:
-      - advanced-settings-class
-      - advanced-settings-controller
-  - id: update-sidebar-settings
-    content: Add Advanced Settings link to sidebar navigation
+      - create-cart-models
+  - id: create-cart-requests
+    content: Create AddCartItemRequest and UpdateCartItemRequest with AdvancedSettings validation
+    status: completed
+  - id: create-cart-resources
+    content: Create CartResource and CartItemResource for API responses
     status: completed
     dependencies:
-      - advanced-settings-view
-  - id: install-spatie-permissions
-    content: Install spatie/laravel-permission package, publish config, and run migrations
-    status: in_progress
-  - id: update-user-model
-    content: Add HasRoles trait to User model
+      - create-cart-models
+  - id: add-cart-routes
+    content: Add cart API routes with authentication middleware
+    status: completed
+    dependencies:
+      - create-cart-controller
+  - id: create-order-controller
+    content: Create OrderController with checkout, index, show, and cancel methods
+    status: completed
+    dependencies:
+      - create-cart-controller
+      - update-order-model
+  - id: create-order-service
+    content: Create OrderService to handle order creation, status updates, and Sale conversion
+    status: completed
+    dependencies:
+      - create-order-status-enum
+      - update-order-model
+  - id: create-checkout-request
+    content: Create CheckoutRequest with shipping and payment validation
+    status: completed
+  - id: create-order-resource
+    content: Create OrderResource for API responses
+    status: completed
+    dependencies:
+      - update-order-model
+  - id: add-order-routes
+    content: Add order API routes with authentication middleware
+    status: completed
+    dependencies:
+      - create-order-controller
+  - id: enhance-auth-controller
+    content: Enhance AuthController profile methods and ClientResource with order count
+    status: completed
+  - id: create-admin-order-controller
+    content: Create Admin OrderController for order status management
+    status: completed
+    dependencies:
+      - create-order-service
+  - id: add-admin-order-routes
+    content: Add admin order management routes
+    status: completed
+    dependencies:
+      - create-admin-order-controller
+  - id: integrate-advanced-settings
+    content: Apply AdvancedSettings (decimal quantities, payment methods) to cart and orders
     status: pending
     dependencies:
-      - install-spatie-permissions
-  - id: create-permissions-seeder
-    content: Create PermissionsSeeder with all POS and Online Store permissions and roles
+      - create-cart-controller
+      - create-order-controller
+  - id: integrate-stock-management
+    content: Integrate stock validation and management in OrderService
     status: pending
     dependencies:
-      - install-spatie-permissions
-  - id: update-user-request
-    content: Add roles validation to UserRequest
+      - create-order-service
+  - id: implement-sale-conversion
+    content: Implement automatic Sale creation when order status changes to Delivered
     status: pending
     dependencies:
-      - install-spatie-permissions
-  - id: update-user-controller
-    content: Update UserController to handle role assignment (syncRoles) in create/update methods
-    status: pending
-    dependencies:
-      - update-user-model
-      - update-user-request
-  - id: update-user-views
-    content: Add role selection to user create/edit forms and display roles in index view
-    status: pending
-    dependencies:
-      - update-user-controller
-  - id: create-role-controller
-    content: Create RoleController with CRUD operations
-    status: pending
-    dependencies:
-      - install-spatie-permissions
-  - id: create-permission-controller
-    content: Create PermissionController with CRUD operations
-    status: pending
-    dependencies:
-      - install-spatie-permissions
-  - id: create-role-permission-requests
-    content: Create RoleRequest and PermissionRequest form validation classes
-    status: pending
-  - id: create-role-views
-    content: Create views for roles management (index, create, edit with permission checkboxes)
-    status: pending
-    dependencies:
-      - create-role-controller
-  - id: create-permission-views
-    content: Create views for permissions management (index, create, edit)
-    status: pending
-    dependencies:
-      - create-permission-controller
-  - id: add-role-permission-routes
-    content: Add resource routes for roles and permissions in web.php
-    status: pending
-    dependencies:
-      - create-role-controller
-      - create-permission-controller
-  - id: update-sidebar-permissions
-    content: Add Roles & Permissions menu items to sidebar
-    status: pending
-    dependencies:
-      - add-role-permission-routes
-  - id: protect-routes
-    content: Apply permission middleware to protect routes based on user roles
-    status: pending
-    dependencies:
-      - create-permissions-seeder
+      - create-order-service
 ---
 
 # Advanced Settings & User Permission Management Implementation Plan

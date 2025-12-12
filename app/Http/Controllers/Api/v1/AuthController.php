@@ -7,6 +7,7 @@ use App\Enums\ClientStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Requests\Api\V1\SignupRequest;
+use App\Http\Requests\Api\V1\ProfileRequest;
 use App\Http\Resources\V1\ClientResource;
 use App\Models\Client;
 use App\Traits\ApiResponse;
@@ -51,7 +52,7 @@ class AuthController extends Controller
 
     public function getProfile()
     {
-        $client = auth('api')->user();
+        $client = auth('api')->user()->load('orders');
         return $this->responseApi(new ClientResource($client), "client profile retrieved successfully");
     }
 

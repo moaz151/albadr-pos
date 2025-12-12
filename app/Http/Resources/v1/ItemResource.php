@@ -17,9 +17,27 @@ class ItemResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'code' => $this->code,
+            'item_code' => $this->item_code,
             'price' => $this->price,
-            'status' => $this->status,
+            'description' => $this->description,
+            'category' => $this->whenLoaded('category', function () {
+                return $this->category ? ['id' => $this->category->id, 'name' => $this->category->name] : null;
+            }),
+            'unit' => $this->whenLoaded('unit', function () {
+                return $this->unit ? ['id' => $this->unit->id, 'name' => $this->unit->name] : null;
+            }),
+            'images' => $this->whenLoaded('gallery', function () {
+                return $this->gallery->map(function ($image) {
+                    return $image->url ?? null;
+                })->filter()->values();
+            }, []),
+            'main_photo' => $this->whenLoaded('mainPhoto', function () {
+                return $this->mainPhoto ? $this->mainPhoto->url : null;
+            }),
+            'status' => [
+                'value' => $this->status->value,
+                'label' => $this->status->label(),
+            ],
         ];
     }
 }

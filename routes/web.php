@@ -14,6 +14,7 @@ use App\Http\Controllers\admin\ReturnController;
 use App\Http\Controllers\admin\ClientPaymentController;
 use App\Http\Controllers\Admin\Settings\GeneralSettingsController;
 use App\Http\Controllers\Admin\Settings\AdvancedSettingsController;
+use App\Http\Controllers\Admin\OrderController;
 
 Route::redirect('/', 'admin/home');
 
@@ -43,5 +44,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('advanced', [AdvancedSettingsController::class, 'view'])->name('settings.advanced.view');
             Route::put('advanced', [AdvancedSettingsController::class, 'update'])->name('settings.advanced.update');
         });
+
+        // Orders management
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::post('orders/{id}/convert-to-sale', [OrderController::class, 'convertToSale'])->name('orders.convertToSale');
     });
 });
