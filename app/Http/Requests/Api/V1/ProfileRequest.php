@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileRequest extends FormRequest
+class SignupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,12 +21,10 @@ class ProfileRequest extends FormRequest
      */
     public function rules(): array
     {
-        $clientId = auth('api')->id();
-        
         return [
             'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:clients,email,' . $clientId,
-            'phone' => 'nullable|string|max:20|unique:clients,phone,' . $clientId,
+            'email' => 'nullable|email|unique:clients,email',
+            'phone' => 'nullable|string|max:20|unique:clients,phone',
             'password' => 'nullable|string|min:8|confirmed',
             'address' => 'nullable|string|max:500',
         ];

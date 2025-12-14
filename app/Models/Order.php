@@ -9,7 +9,7 @@ use App\Models\Client;
 use App\Models\Sale;
 use App\Models\Item;
 
-class Order extends Model
+class Order extends Model 
 {
     use HasFactory;
 
@@ -32,6 +32,7 @@ class Order extends Model
 
     protected $casts = [
         'status' => \App\Enums\OrderStatusEnum::class,
+        'payment_method' => \App\Enums\PaymentTypeEnum::class,
     ];
 
     public function items()

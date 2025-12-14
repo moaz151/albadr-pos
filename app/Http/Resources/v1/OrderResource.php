@@ -19,7 +19,6 @@ class OrderResource extends JsonResource
             'order_number' => $this->order_number,
             'status' => [
                 'value' => $this->status,
-                'label' => \App\Enums\OrderStatusEnum::from($this->status)->label(),
             ],
             'payment_method' => 'cash',
             'price' => $this->price,

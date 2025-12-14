@@ -7,7 +7,6 @@ use App\Enums\ClientStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Requests\Api\V1\SignupRequest;
-use App\Http\Requests\Api\V1\ProfileRequest;
 use App\Http\Resources\V1\ClientResource;
 use App\Models\Client;
 use App\Traits\ApiResponse;

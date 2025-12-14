@@ -94,31 +94,39 @@ class OrderController extends Controller
      * Cancel order (if status allows)
      */
     public function cancel($id)
-    {
-        try {
-            $client = auth('api')->user();
-            
-            $order = Order::where('client_id', $client->id)
-                ->findOrFail($id);
+{
+    try {
+        $client = auth('api')->user();
+        
+        $order = Order::where('client_id', $client->id)
+            ->findOrFail($id);
 
-            // Only allow cancellation if order is confirmed
-            if ($order->status !== OrderStatusEnum::confirmed->value) {
-                return $this->apiErrorMessage(
-                    "Order can only be cancelled if status is 'Confirmed'",
-                    400
-                );
-            }
-
-            // Update status to cancelled (if you have a cancelled status)
-            // For now, we'll just return an error since there's no cancelled status in the enum
-            // You might want to add a cancelled status to OrderStatusEnum
+        // Check if order is already cancelled
+        if ($order->status == OrderStatusEnum::cancelled->value) {
             return $this->apiErrorMessage(
-                "Order cancellation not implemented. Please contact support.",
+                "Order is already cancelled",
                 400
             );
-        } catch (\Exception $e) {
-            return $this->apiErrorMessage($e->getMessage(), 400);
         }
+
+        // Only allow cancellation if order status is BEFORE confirmed
+        // Once admin confirms (status >= confirmed), client cannot cancel
+        if ($order->status >= OrderStatusEnum::confirmed->value) {
+            $currentStatus = OrderStatusEnum::from($order->status);
+            return $this->apiErrorMessage(
+                "Order cannot be cancelled once it has been confirmed by admin. Current status: " . $currentStatus->label(),
+                400
+            );
+        }
+
+        // Allow cancellation - set status to cancelled
+        $order->status = OrderStatusEnum::cancelled->value;
+        $order->save();
+
+        return $this->responseApi([], "Order cancelled successfully", 200);
+    } catch (\Exception $e) {
+        return $this->apiErrorMessage($e->getMessage(), 400);
     }
+}
 }
 

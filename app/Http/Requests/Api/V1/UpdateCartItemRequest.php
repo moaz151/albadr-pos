@@ -43,14 +43,15 @@ class UpdateCartItemRequest extends FormRequest
     public function messages(): array
     {
         $advancedSettings = app(AdvancedSettings::class);
-        
         return [
+            'item_id.required' => 'Item ID is required.',
+            'item_id.exists' => 'The selected item does not exist.',
             'quantity.required' => 'Quantity is required.',
             'quantity.numeric' => 'Quantity must be a number.',
             'quantity.min' => 'Quantity must be at least 0.01.',
             'quantity.integer' => $advancedSettings->allow_decimal_quantities 
-                ? '' 
-                : 'Quantities must be whole numbers only.',
+            ? '' 
+            : 'Quantities must be whole numbers only.',
         ];
     }
 }

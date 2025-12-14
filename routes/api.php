@@ -23,10 +23,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ApiJsonResponse::class], functio
     
     // Item routes
     Route::group(['prefix' => 'items', 'middleware' => 'auth:api'], function(){
+        // Route::get('items', [ItemController::class, 'index']);
+        // Route::get('items/{id}', [ItemController::class, 'show']);
+        // Route::get('items/category/{categoryId}', [ItemController::class, 'byCategory']);
+        // Route::get('items/search', [ItemController::class, 'search']);
+    // AI Recommendations
         Route::get('/', [ItemController::class, 'index']);
-        Route::get('/{id}', [ItemController::class, 'show']);
-        Route::get('/category/{categoryId}', [ItemController::class, 'byCategory']);
         Route::get('/search', [ItemController::class, 'search']);
+        Route::get('/category/{categoryId}', [ItemController::class, 'byCategory']);
+        Route::get('/{id}', [ItemController::class, 'show']);
     });
     
     // Cart routes (protected)

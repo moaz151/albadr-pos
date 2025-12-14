@@ -4,6 +4,8 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Settings\AdvancedSettings;
+use App\Enums\PaymentTypeEnum;
+use Illuminate\Validation\Rule;
 
 class CheckoutRequest extends FormRequest
 {
@@ -26,7 +28,7 @@ class CheckoutRequest extends FormRequest
             'shipping_name' => ['required', 'string', 'max:255'],
             'shipping_address' => ['required', 'string'],
             'shipping_phone' => ['required', 'string', 'max:20'],
-            'payment_method' => ['required', 'string', 'in:cash'],
+            'payment_method' => ['required', 'in:' . PaymentTypeEnum::cash->value],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }

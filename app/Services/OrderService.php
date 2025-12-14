@@ -56,8 +56,8 @@ class OrderService
             $order = Order::create([
                 'client_id' => $client->id,
                 'order_number' => $orderNumber,
-                'status' => OrderStatusEnum::confirmed->value,
-                'payment_method' => 'cash',
+                'status' => OrderStatusEnum::pending->value,
+                'payment_method' => PaymentTypeEnum::cash->value,
                 'price' => $price,
                 'shipping_cost' => $shippingCost,
                 'total_price' => $totalPrice,
@@ -137,7 +137,7 @@ class OrderService
                 'shipping_cost' => $shippingCost,
                 'net_amount' => $netAmount,
                 'invoice_number' => $invoiceNumber,
-                'payment_type' => 'cash',
+                'payment_type' => PaymentTypeEnum::cash->value,
             ]);
 
             // Attach items to sale
@@ -158,8 +158,7 @@ class OrderService
             $order->sale_id = $sale->id;
             $order->save();
 
-            // Handle safe transaction if payment received (cash payment, so paid = net)
-            $paidAmount = $netAmount; // Cash on delivery, full amount paid
+            // Handle safe transaction if payment received
             if ($netAmount > 0) {
                 (new SafeService())->inTransaction($sale, $paidAmount, 'Order Payment, Invoice #: ' . $invoiceNumber);
             }

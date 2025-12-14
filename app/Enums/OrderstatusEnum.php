@@ -4,29 +4,35 @@ namespace App\Enums;
 
 enum OrderStatusEnum: int
 {
-    case confirmed  = 1;
-    case processing  = 2;
-    case shipped  = 3;
-    case delivered  = 4;
+    case pending = 0;      // client can cancel
+    case confirmed = 1;     // Admin confirmed - cannot cancel
+    case processing = 2;    // Cannot cancel
+    case shipped = 3;       // Cannot cancel
+    case delivered = 4;     // Cannot cancel
+    case cancelled = 5;
 
 
     public function label(): string
     {
         return match($this) {
-            OrderStatusEnum::confirmed  => __('trans.confirmed '),
-            OrderStatusEnum::processing  => __('trans.processing '),
-            OrderStatusEnum::shipped  => __('trans.shipped '),
-            OrderStatusEnum::delivered  => __('trans.delivered '),
+            OrderStatusEnum::pending => __('trans.pending'),
+            OrderStatusEnum::confirmed => __('trans.confirmed'),
+            OrderStatusEnum::processing => __('trans.processing'),
+            OrderStatusEnum::shipped => __('trans.shipped'),
+            OrderStatusEnum::delivered => __('trans.delivered'),
+            OrderStatusEnum::cancelled => __('trans.cancelled'),
         };
     }
 
     public function style(): string
     {
         return match($this) {
-            OrderStatusEnum::confirmed  => 'info',
+            OrderStatusEnum::pending  => 'warning',
+            OrderStatusEnum::confirmed  => 'primary',
             OrderStatusEnum::processing  => 'success',
-            OrderStatusEnum::shipped  => 'danger',
-            OrderStatusEnum::delivered  => 'warning',
+            OrderStatusEnum::shipped  => 'info',
+            OrderStatusEnum::delivered  => 'success',
+            OrderStatusEnum::cancelled  => 'danger',
         };
     }
 

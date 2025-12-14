@@ -74,8 +74,8 @@ class ItemController extends Controller
         
         $items = Item::where('status', ItemStatusEnum::active->value)
             ->where(function($q) use ($searchTerm) {
-                $q->where('name', 'like', "%{$searchTerm}%")
-                  ->orWhere('description', 'like', "%{$searchTerm}%");
+                $q->where('name', 'like', "%{$searchTerm}%");
+                //   ->orWhere('description', 'like', "%{$searchTerm}%");
             })
             ->with(['category', 'unit', 'mainPhoto'])
             ->paginate($request->get('per_page', 15));
