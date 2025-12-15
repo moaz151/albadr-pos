@@ -1,5 +1,5 @@
 @extends('admin.layouts.app', [#
-    'pageName' => 'Users',
+    'pageName' => __('trans.items'),
 ])
 
 @section('content')
@@ -8,7 +8,7 @@
     <div class="col-sm-12">
         <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Items List</h3>
+                <h3 class="card-title">{{ __('trans.items_list') }}</h3>
                 <div class="card-tools">
                   <a href="{{ route('admin.items.create') }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-plus"></i> Create

@@ -11,6 +11,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\admin\SaleController;
 use App\Http\Controllers\admin\ReturnController;
+use App\Http\Controllers\admin\ReportController;
 use App\Http\Controllers\admin\ClientPaymentController;
 use App\Http\Controllers\Admin\Settings\GeneralSettingsController;
 use App\Http\Controllers\Admin\Settings\AdvancedSettingsController;
@@ -43,6 +44,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::put('general', [GeneralSettingsController::class, 'update'])->name('settings.general.update');
             Route::get('advanced', [AdvancedSettingsController::class, 'view'])->name('settings.advanced.view');
             Route::put('advanced', [AdvancedSettingsController::class, 'update'])->name('settings.advanced.update');
+        });
+        Route::group(['prefix' => 'reports'], function () {
+            Route::get('item-transation', [ReportController::class, 'itemTransactions'])->name('reports.item-transactions');
+            Route::get('sales-reports', [ReportController::class, 'salesReports'])->name('reports.sales-reports');
         });
 
         // Orders management

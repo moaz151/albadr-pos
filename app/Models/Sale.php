@@ -61,4 +61,18 @@ class Sale extends Model
         ->withPivot('unit_price', 'quantity', 'total_price' , 'notes');
     }
 
+    public function warehouseTransactions()
+    {
+        return $this->morphMany('App\Models\WarehouseTransaction', 'reference');
+    }
+
+    public function isSale()
+    {
+        return $this->type === SaleTypeEnum::sale;
+    }
+    public function isReturn()
+    {
+        return $this->type === SaleTypeEnum::return;
+    }
+
 }

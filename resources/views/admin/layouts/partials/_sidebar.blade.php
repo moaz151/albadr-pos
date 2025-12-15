@@ -36,8 +36,8 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           
-          <li class="nav-item @if(request()->is('admin/sales/*')) menu-open  @endif ">
-            <a href="" class="nav-link active">
+          <li class="nav-item @if(request()->routeIs('admin.sales.*')) menu-open  @endif">
+            <a href="#" class="nav-link @if(request()->routeIs('admin.sales.*')) active @endif">
               <i class="nav-icon fas fa-chart-line"></i>
               <p>
                 @lang('trans.sales')
@@ -66,8 +66,8 @@
             </ul>
           </li>
           {{-- Returns Section --}}
-          <li class="nav-item @if(request()->is('admin/return/*')) menu-open  @endif ">
-            <a href="" class="nav-link active">
+          <li class="nav-item @if(request()->routeIs('admin.returns.*')) menu-open  @endif">
+            <a href="#" class="nav-link @if(request()->routeIs('admin.returns.*')) active @endif">
               <i class="nav-icon fas fa-chart-line"></i>
               <p>
                 @lang('trans.returns')
@@ -152,7 +152,7 @@
             </a>
           </li>
           <li class="nav-item @if(request()->is('admin/settings/*')) menu-open @endif">
-            <a href="#" class="nav-link active">
+            <a href="#" class="nav-link @if(request()->is('admin/settings/*')) active @endif">
                 <i class="nav-icon fas fa-chart-line"></i>
                 <p>
                     @lang('trans.settings')
@@ -170,6 +170,29 @@
                     <a href="{{ route('admin.settings.advanced.view') }}" class="nav-link @if(request()->routeIs('admin.settings.advanced.view')) active @endif">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Advanced Settings</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+          <li class="nav-item @if(request()->is('admin/reports/*')) menu-open @endif">
+            <a href="#" class="nav-link @if(request()->is('admin/reports/*')) active @endif">
+                <i class="nav-icon fas fa-chart-line"></i>
+                <p>
+                    @lang('trans.reports')
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('admin.reports.sales-reports') }}" class="nav-link @if(request()->routeIs('admin.reports.sales-reports')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>@lang('trans.reports')</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.reports.item-transactions') }}" class="nav-link @if(request()->routeIs('admin.reports.item-transactions')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>@lang('trans.item_transactions')</p>
                     </a>
                 </li>
             </ul>
