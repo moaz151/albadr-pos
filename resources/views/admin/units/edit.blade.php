@@ -34,6 +34,50 @@
           </div>
         @endforeach
       </div>
+      <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>@lang('trans.current_image')</label>
+                <div class="mb-3">
+                    @if($unit->photo)
+                        <img src="{{ asset('storage/' . $unit->photo->path) }}" 
+                             alt="{{ $unit->name }}" 
+                             class="img-thumbnail" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <br>
+                        <small class="text-muted">{{ $unit->photo->original_name }}</small>
+                    @else
+                        <div class="bg-light d-flex align-items-center justify-content-center" 
+                             style="width: 150px; height: 150px;">
+                            <i class="fas fa-image text-muted fa-2x"></i>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="photo">@lang('trans.new_image')</label>
+                <div class="custom-file">
+                    <input type="file"
+                           class="custom-file-input @error('photo') is-invalid @enderror" 
+                           id="photo"
+                           name="photo"
+                           accept="image/*">
+                    <label class="custom-file-label" for="photo">@lang('trans.choose_new_file')</label>
+                </div>
+                @error('photo')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <small class="form-text text-muted">
+                    @lang('trans.leave_empty_keep_current')
+                </small>
+            </div>
+        </div>
+    </div>
       </form>
     </div>
     <!-- /.card-body -->

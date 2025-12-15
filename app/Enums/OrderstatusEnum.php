@@ -36,6 +36,18 @@ enum OrderStatusEnum: int
         };
     }
 
+    public function icon(): string
+{
+    return match ($this) {
+        self::pending   => 'fas fa-clock text-warning',
+        self::confirmed => 'fas fa-check-circle text-primary',
+        self::processing => 'fas fa-cogs text-info',
+        self::shipped => 'fas fa-truck text-info',
+        self::delivered => 'fas fa-box-open text-success',
+        self::cancelled => 'fas fa-times-circle text-danger',
+    };
+}
+
     public static function labels() :array
     {
         $labels = [];

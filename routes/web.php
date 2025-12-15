@@ -34,7 +34,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::resource('items', ItemController::class);
         Route::resource('clients', ClientController::class);
         Route::resource('warehouses', WarehouseController::class);
-        // Client Pay 
+        // Client Pay
         Route::get('clients/{client}/payments/create', [ClientPaymentController::class, 'create'])->name('clients.payments.create');
         Route::post('clients/{client}/payments', [ClientPaymentController::class, 'store'])->name('clients.payments.store');
 
@@ -46,9 +46,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         });
 
         // Orders management
-        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
-        Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+        Route::resource('orders', OrderController::class);
         Route::put('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-        Route::post('orders/{id}/convert-to-sale', [OrderController::class, 'convertToSale'])->name('orders.convertToSale');
+        // Route::get('orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        // Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+        // Route::put('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        // Route::post('orders/{id}/convert-to-sale', [OrderController::class, 'convertToSale'])->name('orders.convertToSale');
     });
 });

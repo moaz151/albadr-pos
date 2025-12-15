@@ -125,6 +125,11 @@ class OrderService
             $discount = 0; // No discount for orders initially
             $shippingCost = $order->shipping_cost;
             $netAmount = $total - $discount + $shippingCost;
+            $paidAmount = 0;
+            if ($order->payment_method === PaymentTypeEnum::cash->value) {
+                // For cash on delivery we assume full payment collected at delivery
+                $paidAmount = $netAmount;
+            }
 
             // Create sale
             $sale = Sale::create([
@@ -161,7 +166,7 @@ class OrderService
             $order->save();
 
             // Handle safe transaction if payment received
-            if ($netAmount > 0) {
+            if ($paidAmount > 0) {
                 (new SafeService())->inTransaction($sale, $paidAmount, 'Order Payment, Invoice #: ' . $invoiceNumber);
             }
 
@@ -180,10 +185,11 @@ class OrderService
         return DB::transaction(function () use ($order, $status) {
             $oldStatusValue = $order->status;
             $order->status = $status->value;
+            
             $order->save();
 
-            // If status changed to delivered, convert to sale
-            if ($status === OrderStatusEnum::delivered && $oldStatusValue !== OrderStatusEnum::delivered->value) {
+            // If status changed to confirmed, convert to sale once
+            if ($status === OrderStatusEnum::confirmed && $oldStatusValue !== OrderStatusEnum::confirmed->value) {
                 if (!$order->sale_id) {
                     $this->convertOrderToSale($order);
                 }

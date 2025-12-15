@@ -94,33 +94,36 @@ class OrderController extends Controller
      * Cancel order (if status allows)
      */
     public function cancel($id)
-{
+    {
     try {
         $client = auth('api')->user();
         
         $order = Order::where('client_id', $client->id)
             ->findOrFail($id);
 
-        // Check if order is already cancelled
-        if ($order->status == OrderStatusEnum::cancelled->value) {
+        // Normalize to enum
+        $statusEnum = $order->status instanceof OrderStatusEnum
+            ? $order->status
+            : OrderStatusEnum::from((int) $order->status);
+
+        // Already cancelled
+        if ($statusEnum === OrderStatusEnum::cancelled) {
             return $this->apiErrorMessage(
                 "Order is already cancelled",
                 400
             );
         }
 
-        // Only allow cancellation if order status is BEFORE confirmed
-        // Once admin confirms (status >= confirmed), client cannot cancel
-        if ($order->status >= OrderStatusEnum::confirmed->value) {
-            $currentStatus = OrderStatusEnum::from($order->status);
+        // Block cancellation once confirmed or later
+        if ($statusEnum->value >= OrderStatusEnum::confirmed->value) {
             return $this->apiErrorMessage(
-                "Order cannot be cancelled once it has been confirmed by admin. Current status: " . $currentStatus->label(),
+                "Order cannot be cancelled once it has been confirmed by admin. Current status: " . $statusEnum->label(),
                 400
             );
         }
 
-        // Allow cancellation - set status to cancelled
-        $order->status = OrderStatusEnum::cancelled->value;
+        // Allow cancellation
+        $order->status = OrderStatusEnum::cancelled;
         $order->save();
 
         return $this->responseApi([], "Order cancelled successfully", 200);

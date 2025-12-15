@@ -21,6 +21,7 @@ class Sale extends Model
 
     protected $casts = [
         'type' => SaleTypeEnum::class,
+        'payment_type' => PaymentTypeEnum::class,
     ];
 
    

@@ -136,6 +136,14 @@
             </a>
           </li>
           <li class="nav-item">
+            <a href="{{ route('admin.orders.index')}}" class="nav-link">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                Orders
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="{{ route('admin.warehouses.index')}}" class="nav-link">
               <i class="nav-icon fas fa-columns"></i>
               <p>
