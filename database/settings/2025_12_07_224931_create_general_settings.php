@@ -10,5 +10,6 @@ return new class extends SettingsMigration
         $this->migrator->add('general.company_email', 'info@mezolux.com');
         $this->migrator->add('general.company_phone', '+2348130000000');
         $this->migrator->add('general.company_logo', 'logo.png');
+        $this->migrator->add('general.shipping_cost', 0);
     }
 };

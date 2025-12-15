@@ -71,6 +71,21 @@
             </span>
           @enderror
         </div>
+        <div class="form-group">
+          <label for="shipping_cost">Shipping Cost</label>
+          <input
+            type="number"
+            class="form-control @error('shipping_cost') is-invalid @enderror"
+            id="shipping_cost"
+            name="shipping_cost"
+            value="{{ old('shipping_cost', $generalSettings->shipping_cost) }}"
+            placeholder="Enter Shipping Cost" >
+          @error('shipping_cost')
+            <span class="invalid-feedback" role="alert">
+              <strong>{{ $message }}</strong>
+            </span>
+          @enderror
+        </div>
         <div>
             <img src="{{ asset('storage/'.$generalSettings->company_logo) }}" style="hight:100px" alt="">
         </div>

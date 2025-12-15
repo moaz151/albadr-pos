@@ -19,6 +19,7 @@ use App\Enums\ItemStatusEnum;
 use App\Http\Requests\Api\V1\CheckoutRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Settings\GeneralSettings;
 
 class OrderService
 {
@@ -45,11 +46,12 @@ class OrderService
             }
 
             // Generate unique order number
-            $orderNumber = 'ORD-' . strtoupper(Str::random(8)) . '-' . time();
+            $orderNumber = str_pad('ORD-', 6, '0', STR_PAD_LEFT) . '-' . time();
 
             // Calculate totals
             $price = $cart->items->sum('total_price');
-            $shippingCost = 0; // Can be calculated based on settings or address
+            $settings = app(GeneralSettings::class);
+            $shippingCost = $settings->shipping_cost;
             $totalPrice = $price + $shippingCost;
 
             // Create order

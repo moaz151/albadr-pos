@@ -19,7 +19,8 @@ class GeneralSettingsController extends Controller
         $generalSettings->company_name = $request->company_name;
         $generalSettings->company_email = $request->company_email;
         $generalSettings->company_phone = $request->company_phone;
-
+        $generalSettings->shipping_cost = $request->shipping_cost;
+        
         if($request->hasFile('company_logo'))
         {
             $file = $request->file('company_logo');

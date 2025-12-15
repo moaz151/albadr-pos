@@ -10,6 +10,8 @@ class GeneralSettings extends Settings
     public string $company_email;
     public string $company_phone;
     public string $company_logo;
+    public int $shipping_cost;
+
     public static function group(): string
     {
         return 'general';

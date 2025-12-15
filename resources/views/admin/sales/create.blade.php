@@ -217,15 +217,23 @@
                                 </tfoot>
                             </table>
                         </div>
+                        @php
+                            $defaultDiscountType = old('discount_type', $advancedSettings->default_discount_method === 'percentage'
+                                ? \App\Enums\DiscountTypeEnum::percentage->value
+                                : \App\Enums\DiscountTypeEnum::fixed->value);
+                        @endphp
                         <div class="discount-box">
                             <div class="row">
                                 <div class="col-sm-3">
                                     <label>@lang('trans.discount_type')</label>
                                     @foreach($discountTypes as $discountTypeVal => $discountType)
                                         <div class="form-check">
-                                            <input class="form-check-input" id="discount{{$discountTypeVal}}" type="radio" name="discount_type"
-                                                   value="{{ $discountTypeVal }}"
-                                                   @if(old('discount_type') == $discountTypeVal || $loop->first) checked @endif>
+                                            <input class="form-check-input"
+                                                id="discount{{$discountTypeVal}}"
+                                                type="radio"
+                                                name="discount_type"
+                                                value="{{ $discountTypeVal }}"
+                                                @checked($defaultDiscountType == $discountTypeVal)>
                                             <label for="discount{{$discountTypeVal}}" class="form-check-label">{{ $discountType }}</label>
                                         </div>
                                     @endforeach
@@ -244,22 +252,34 @@
                                 </div>
                             </div>
                         </div>
+                        @php
+                            $allowedPaymentMethods = $advancedSettings->payment_methods ?? [];
+                            $paymentCases = \App\Enums\PaymentTypeEnum::cases();
+                            // Keep only allowed methods (match by name or value as string)
+                            $paymentOptions = array_filter($paymentCases, function($case) use ($allowedPaymentMethods) {
+                                return in_array($case->name, $allowedPaymentMethods, true) || in_array((string) $case->value, $allowedPaymentMethods, true);
+                            });
+                            if (empty($paymentOptions)) {
+                                $paymentOptions = [\App\Enums\PaymentTypeEnum::cash];
+                            }
+                        @endphp
                         <div class="payment-type">
                             <div class="row">
                                 <div class="col-sm-3">
                                     <label>@lang('trans.payment_type')</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" id="payment_type{{\App\Enums\PaymentTypeEnum::cash}}" type="radio" name="payment_type"
-                                               value="{{\App\Enums\PaymentTypeEnum::cash}}"
-                                               @if(old('payment_type') == \App\Enums\PaymentTypeEnum::cash->value || true) checked @endif>
-                                        <label for="payment_type{{\App\Enums\PaymentTypeEnum::cash}}" class="form-check-label">{{ \App\Enums\PaymentTypeEnum::cash->label() }}</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" id="payment_type{{\App\Enums\PaymentTypeEnum::debit}}" type="radio" name="payment_type"
-                                               value="{{\App\Enums\PaymentTypeEnum::debit}}"
-                                               @if(old('payment_type') == \App\Enums\PaymentTypeEnum::debit->value) checked @endif>
-                                        <label for="payment_type{{\App\Enums\PaymentTypeEnum::debit}}" class="form-check-label">{{ \App\Enums\PaymentTypeEnum::debit->label() }}</label>
-                                    </div>
+                                    @foreach($paymentOptions as $paymentCase)
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   id="payment_type{{ $paymentCase->value }}"
+                                                   type="radio"
+                                                   name="payment_type"
+                                                   value="{{ $paymentCase->value }}"
+                                                   @checked(old('payment_type', \App\Enums\PaymentTypeEnum::cash->value) == $paymentCase->value)>
+                                            <label for="payment_type{{ $paymentCase->value }}" class="form-check-label">
+                                                {{ $paymentCase->label() }}
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
