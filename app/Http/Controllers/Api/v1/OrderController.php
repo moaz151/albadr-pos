@@ -24,12 +24,26 @@ class OrderController extends Controller
     }
 
     /**
-     * Create order from cart (checkout)
+     * Create order from cart (checkout).
+     *
+     * Authentication is required. If the user is not authenticated, a clear
+     * 401 response is returned so the frontend can redirect to login.
      */
     public function checkout(CheckoutRequest $request)
     {
-        try {
             $client = auth('api')->user();
+
+        if (!$client) {
+            return $this->responseApi(
+                [
+                    'login_required' => true,
+                ],
+                "Authentication required. Please login to continue checkout.",
+                false
+            )->setStatusCode(401);
+        }
+
+        try {
             $order = $this->orderService->createOrderFromCart($client, $request);
             
             return $this->responseApi(

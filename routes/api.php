@@ -12,7 +12,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::group(['prefix' => 'v1', 'middleware' => ApiJsonResponse::class], function(){
+Route::group([
+    'prefix' => 'v1',
+    'middleware' => [
+        ApiJsonResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+    ],
+], function(){
 
     Route::group(['prefix' => 'auth'], function(){
         Route::post('login', [AuthController::class, 'login']);
@@ -34,22 +40,31 @@ Route::group(['prefix' => 'v1', 'middleware' => ApiJsonResponse::class], functio
         Route::get('/{id}', [ItemController::class, 'show']);
     });
     
-    // Cart routes (protected)
-    Route::group(['prefix' => 'cart', 'middleware' => 'auth:api'], function(){
+    // Cart routes (public for local cart support)
+    Route::group(['prefix' => 'cart'], function(){
+        // These endpoints will return either real cart data (for authenticated users)
+        // or empty/validation-only responses for guests. The actual storage for
+        // unauthenticated users is handled client-side (localStorage).
         Route::get('/', [CartController::class, 'index']);
         Route::post('/items', [CartController::class, 'addItem']);
         Route::put('/items/{itemId}', [CartController::class, 'updateItem']);
         Route::delete('/items/{itemId}', [CartController::class, 'removeItem']);
         Route::delete('/', [CartController::class, 'clear']);
         Route::get('/total', [CartController::class, 'getTotal']);
+
+        // Sync local cart to online cart (requires authentication)
+        Route::post('/sync', [CartController::class, 'syncCart'])->middleware('auth:api');
     });
     
-    // Order routes (protected)
-    Route::group(['prefix' => 'orders', 'middleware' => 'auth:api'], function(){
+    // Order routes
+    Route::group(['prefix' => 'orders'], function(){
+        // Checkout performs its own auth check to return a custom error shape
         Route::post('/checkout', [OrderController::class, 'checkout']);
-        Route::get('/', [OrderController::class, 'index']);
-        Route::get('/{id}', [OrderController::class, 'show']);
-        Route::post('/{id}/cancel', [OrderController::class, 'cancel']);
+
+        // Other order routes require authentication via middleware
+        Route::get('/', [OrderController::class, 'index'])->middleware('auth:api');
+        Route::get('/{id}', [OrderController::class, 'show'])->middleware('auth:api');
+        Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->middleware('auth:api');
     });
 });
 

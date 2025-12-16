@@ -29,12 +29,13 @@ class OrderService
     public function createOrderFromCart($client, CheckoutRequest $request): Order
     {
         return DB::transaction(function () use ($client, $request) {
-            // Get or get cart
+            // Get client's cart (if it exists)
             $cart = Cart::with('items.item')
                 ->where('client_id', $client->id)
-                ->firstOrFail();
+                ->first();
 
-            if ($cart->items->isEmpty()) {
+            // If no cart or no items, treat as empty cart
+            if (!$cart || $cart->items->isEmpty()) {
                 throw new \Exception('Cart is empty');
             }
 
