@@ -1,5 +1,5 @@
 @extends('admin.layouts.app', [#
-    'pageName' => 'Users',
+    'pageName' => 'Update Item',
 ])
 
 @section('content')
@@ -91,6 +91,22 @@
           </div>
         @endforeach
         </div>
+        <hr>
+        <h3>@lang('trans.stock')</h3>
+        <div class="form-group">
+          <label for="quantity">@lang('trans.quantity')</label>
+          <input type="text" class="form-control @error('quantity') is-invalid @enderror"
+          id="quantity" name="quantity" value="{{ old('quantity', $item->quantity) }}"
+          placeholder="@lang('trans.enter_quantity')">
+        </div>
+        <div class="form-group">
+          <label for="warehouse_id">@lang('trans.warehouse')</label>
+          <select id="warehouse_id" name="warehouse_id" class="form-control @error('warehouse_id') is-invalid @enderror">
+            <option value="">@lang('trans.choose_warehouse')</option>
+            @foreach($warehouses as $warehouse)
+              <option value="{{ $warehouse->id }}" {{ old('warehouse_id', $item->warehouse_id) == $warehouse->id ? 'selected' : '' }}>{{ $warehouse->name }}</option>
+            @endforeach
+          </select>
       </form>
     </div>
     <!-- /.card-body -->

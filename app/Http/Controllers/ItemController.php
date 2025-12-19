@@ -100,7 +100,8 @@ class ItemController extends Controller
         $categories = Category::all();
         $units = Unit::all();
         $ItemStatus = ItemStatusEnum::labels();
-        return view('admin.items.edit', compact('item', 'ItemStatus', 'categories', 'units'));
+        $warehouses = Warehouse::all();
+        return view('admin.items.edit', compact('item', 'ItemStatus', 'categories', 'units', 'warehouses'));
     }
 
     /**

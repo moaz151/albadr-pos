@@ -51,6 +51,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::group(['prefix' => 'reports'], function () {
             Route::get('item-transation', [ReportController::class, 'itemTransactions'])->name('reports.item-transactions');
             Route::get('sales-reports', [ReportController::class, 'salesReports'])->name('reports.sales-reports');
+            Route::get('sales-reports/print', [ReportController::class, 'salesReportsPrint'])->name('reports.sales-reports.print');
+            Route::get('sales-reports/pdf', [ReportController::class, 'salesReportsPdf'])->name('reports.sales-reports.pdf');
+            Route::get('sales-reports/excel', [ReportController::class, 'salesReportsExcel'])->name('reports.sales-reports.excel');
         });
 
         // Orders management

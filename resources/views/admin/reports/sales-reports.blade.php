@@ -1,4 +1,4 @@
-{{-- @extends('admin.layouts.app', [
+@extends('admin.layouts.app', [
     'pageName' => __('trans.sales_reports') ?? 'Sales Reports',
 ])
 
@@ -84,22 +84,26 @@
 
                     <div class="col-md-12 text-center">
                         <button type="submit" class="btn btn-primary px-5">
-                            <i class="fas fa-search"></i> @lang('trans.view') ?? @lang('trans.search')
+                            <i class="fas fa-search"></i> @lang('trans.view')
                         </button>
                     </div>
                 </form>
 
                 <!-- Actions row (Print / Export / PDF) -->
                 <div class="mb-3 d-flex flex-wrap">
-                    <button type="button" class="btn btn-secondary mr-2 mb-2">
-                        <i class="fas fa-print"></i> @lang('trans.print') ?? 'Print'
-                    </button>
-                    <button type="button" class="btn btn-secondary mr-2 mb-2">
-                        <i class="fas fa-file-excel"></i> @lang('trans.export_excel') ?? 'Export Excel'
-                    </button>
-                    <button type="button" class="btn btn-secondary mb-2">
-                        <i class="fas fa-file-pdf"></i> @lang('trans.export_pdf') ?? 'Export PDF'
-                    </button>
+                    <a href="{{ route('admin.reports.sales-reports.print', request()->query()) }}" 
+                       target="_blank"
+                       class="btn btn-secondary mr-2 mb-2">
+                        <i class="fas fa-print"></i> @lang('trans.print')
+                    </a>
+                    <a href="{{ route('admin.reports.sales-reports.excel', request()->query()) }}" 
+                       class="btn btn-secondary mr-2 mb-2">
+                        <i class="fas fa-file-excel"></i> @lang('trans.export_excel')
+                    </a>
+                    <a href="{{ route('admin.reports.sales-reports.pdf', request()->query()) }}" 
+                       class="btn btn-secondary mb-2">
+                        <i class="fas fa-file-pdf"></i> @lang('trans.export_pdf')
+                    </a>
                 </div>
 
                 <!-- Main table -->
@@ -120,32 +124,53 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($itemsData as $item)
+                        @foreach($sales as $sale)
                             <tr>
-                                <td>{{ $item->item_code }}</td>
-                                <td>{{ $item->item_name }}</td>
+                                <td>{{ $sale->items->first()->item_code }}</td>
+                                <td>{{ $sale->items->first()->name }}</td>
                                 <td>
-                                    @if ($item->isSale())
+                                    @if ($sale->isSale())
                                     @lang('trans.sale_invoice')
                                 @else
                                     @lang('trans.return_invoice')
                                 @endif
                                 - @lang('trans.client_name'):
-                                {{ $item->client->name }}
+                                {{ $sale->client->name }}
                                 </td>
-                                <td>{{ $item->category->name }}</td>
-                                <td>{{ $item->warehouse->name }}</td>
+                                <td>{{ $sale->items->first()->category->name }}</td>
+                                <td>{{ $sale->warehouse->name }}</td>
 
-                                <td>{{ $item->sold_quantity }}</td>
-                                <td>{{ $item->total_sales_amount }}</td>
+                                @php
+                                    $firstItem = $sale->items->first();
+                                    $soldQuantity = $firstItem ? $firstItem->pivot->quantity : 0;
+                                    // Find returns for this sale (Sale records with type=return that have matching items)
+                                    $returnQuantity = 0;
+                                    $totalReturnsAmount = 0;
+                                    if ($sale->isSale() && $firstItem) {
+                                        $returns = \App\Models\Sale::where('type', \App\Enums\SaleTypeEnum::return->value)
+                                            ->where('client_id', $sale->client_id)
+                                            ->whereHas('items', function($q) use ($firstItem) {
+                                                $q->where('items.id', $firstItem->id);
+                                            })
+                                            ->get();
+                                        $returnQuantity = $returns->sum(function($return) use ($firstItem) {
+                                            $returnItem = $return->items->where('id', $firstItem->id)->first();
+                                            return $returnItem ? $returnItem->pivot->quantity : 0;
+                                        });
+                                        $totalReturnsAmount = $returns->sum('net_amount') ?? 0;
+                                    }
+                                    $netQuantity = $soldQuantity - $returnQuantity;
+                                @endphp
+                                <td>{{ $soldQuantity }}</td>
+                                <td>{{ $sale->net_amount ?? $sale->total ?? 0 }}</td>
 
-                                <td>{{ $item->returns->sum('quantity') }}</td>
-                                <td>{{ $item->total_returns_amount }}</td>
+                                <td>{{ $returnQuantity }}</td>
+                                <td>{{ $totalReturnsAmount }}</td>
                                 
-                                <td>{{ $item->sold_quantity - $item->returns->sum('quantity') }}</td>
+                                <td>{{ $netQuantity }}</td>
                             </tr>
                         @endforeach
-                        @if($itemsData->isEmpty())
+                        @if($sales->isEmpty())
                             <tr>
                                 <td colspan="10" class="text-center">@lang('trans.no_data_available')</td>
                             </tr>
@@ -153,38 +178,9 @@
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Totals summary row (similar to screenshot bottom section) -->
-                <div class="row text-center mt-4">
-                    <div class="col-md-3 mb-3">
-                        <strong>@lang('trans.total_return_quantity')</strong>
-                        <div class="h4">{{ number_format($totalReturnQty, 2) }}</div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <strong>@lang('trans.total_returns_amount')</strong>
-                        <div class="h4">{{ number_format($totalReturnsAmount, 2) }}</div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <strong>@lang('trans.total_net_amount_after_returns')</strong>
-                        <div class="h4">{{ number_format($totalSalesAmount - $totalReturnsAmount, 2) }}</div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <strong>@lang('trans.total_sales_amount')</strong>
-                        <div class="h4">{{ number_format($totalSalesAmount, 2) }}</div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <strong>@lang('trans.total_net_quantity')</strong>
-                        <div class="h4">{{ number_format($totalNetQty, 2) }}</div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <strong>@lang('trans.total_sold_quantity')</strong>
-                        <div class="h4">{{ number_format($totalSoldQty, 2) }}</div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
 </div>
 @endsection
- --}}
+

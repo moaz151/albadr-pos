@@ -25,11 +25,11 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             WarehouseSeeder::class,
             ClientsSeeder::class,
-            UnitsSeeder::class,
+            // UnitsSeeder::class,
             CategoriesSeeder::class,
-            ItemsSeeder::class,
+            // ItemsSeeder::class,
             SafesSeeder::class,
-            OrdersSeeder::class,
+            // OrdersSeeder::class,
             PermissionsSeeder::class,
         ]);
     }

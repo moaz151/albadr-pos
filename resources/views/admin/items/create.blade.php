@@ -1,5 +1,5 @@
 @extends('admin.layouts.app', [#
-    'pageName' => 'Users',
+    'pageName' => 'Items',
 ])
 
 @section('content')
@@ -74,7 +74,7 @@
         {{-- minimum Stock ID input  --}}
         <div class="form-group">
           <label for="minimum_stock">Minimum Stock</label>
-          <input class="form-control" id="minimum_stock" placeholder="Enter Minimum Stock" name="minimum_stock" value="{{ old('minimum_stock') }}">
+          <input class="form-control" type="number" id="minimum_stock" placeholder="Enter Minimum Stock" name="minimum_stock" value="{{ old('minimum_stock') }}">
         </div>
         <div class="form-group">
           <label for="photo">@lang('trans.photo')</label>
