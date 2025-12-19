@@ -10,6 +10,11 @@ use App\Models\Sale;
 
 class ReportController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:view-reports')->only(['itemTransactions', 'salesReports']);
+    }
+
     public function itemTransactions(Request $request)
     {
         $items = Item::all();

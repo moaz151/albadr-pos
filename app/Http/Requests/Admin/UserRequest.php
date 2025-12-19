@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use App\Enums\UserStatusEnum;
 
 class UserRequest extends FormRequest
 {
@@ -26,7 +28,11 @@ class UserRequest extends FormRequest
             'email' => 'nullable|email|max:255|unique:users,email,' . $this->route('user'),
             'password' => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'string|min:6|confirmed',
             'full_name' => 'required|string|max:255',
-            'status' => 'required|in:1,2',
+            'status' => ['required', Rule::enum(UserStatusEnum::class)],
+            'roles' => 'required|array',
+            'roles.*' => 'required|exists:roles,id',
+            'permissions' => 'sometimes|array',
+            'permissions.*' => 'required|exists:permissions,id',
         ];
     }
 }

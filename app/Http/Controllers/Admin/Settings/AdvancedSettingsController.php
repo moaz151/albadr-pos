@@ -9,6 +9,11 @@ use App\Enums\PaymentTypeEnum;
 
 class AdvancedSettingsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:manage-settings')->only(['view', 'update']);
+    }
+
     public function view(AdvancedSettings $advancedSettings)
     {
         return view('admin.settings.advanced')

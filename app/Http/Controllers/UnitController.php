@@ -9,6 +9,15 @@ use App\Http\Requests\admin\UnitRequest;
 
 class UnitController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:list-Unit')->only(['index']);
+        $this->middleware('can:create-Unit')->only(['create', 'store']);
+        $this->middleware('can:view-Unit')->only(['show']);
+        $this->middleware('can:edit-Unit')->only(['edit', 'update']);
+        $this->middleware('can:delete-Unit')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */

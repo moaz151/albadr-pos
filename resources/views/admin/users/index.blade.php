@@ -23,6 +23,8 @@
                     <tr>
                       <th style="width: 10px">#</th>
                       <th>Username</th>
+                      <th>Roles</th>
+                      <th>Additional Permissions</th>
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
@@ -33,6 +35,16 @@
                     <tr>
                       <td>{{$loop->iteration}}</td>
                       <td>{{ $user->username }}</td>
+                      <td>
+                        @foreach ($user->roles as $role)
+                          <span class="badge badge-secondary">{{ $role->display_name ?? $role->name }}</span>
+                        @endforeach
+                      </td>
+                      <td>
+                        @foreach ($user->permissions as $permission)
+                          <span class="badge badge-secondary">{{ $permission->display_name ?? $permission->name }}</span>
+                        @endforeach
+                      </td>
                       <td>
                       <span class="badge badge-{{ $user->status->style() }}">{{ $user->status->label() }}</span>
                       </td>

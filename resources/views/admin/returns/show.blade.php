@@ -19,6 +19,10 @@
                       class="btn btn-sm btn-secondary">
                         <i class="fas fa-list"></i> Back to list
                     </a>
+                        <a href="{{ route('admin.sales.print', $return->id) }}"
+                      class="btn btn-sm btn-primary">
+                        <i class="fas fa-print"></i> Print Return
+                    </a>
                 </div>
             </div>
             <div class="card-body">

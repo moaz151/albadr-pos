@@ -41,7 +41,7 @@
                             <tbody>
                                 <tr><th width="220">Total</th><td>{{ $sale->total }}</td></tr>
                                 <tr><th>Discount</th><td>{{ $sale->discount }}</td></tr>
-                                <tr><th>Discount Type</th><td>{{ $sale->discount_type->label() }}</td></tr>
+                                <tr><th>Discount Type</th><td>{{ $discountTypes[$sale->discount_type] }}</td></tr>
                                 <tr><th>Shipping</th><td>{{ $sale->shipping_cost }}</td></tr>
                                 <tr><th>Net</th><td>{{ $sale->net_amount }}</td></tr>
                                 <tr><th>Paid</th><td>{{ $sale->paid_amount }}</td></tr>

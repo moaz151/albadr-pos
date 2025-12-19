@@ -16,6 +16,8 @@ use App\Http\Controllers\admin\ClientPaymentController;
 use App\Http\Controllers\Admin\Settings\GeneralSettingsController;
 use App\Http\Controllers\Admin\Settings\AdvancedSettingsController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\RoleController;
+
 
 Route::redirect('/', 'admin/home');
 
@@ -35,6 +37,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::resource('items', ItemController::class);
         Route::resource('clients', ClientController::class);
         Route::resource('warehouses', WarehouseController::class);
+        Route::resource('roles', RoleController::class);
         // Client Pay
         Route::get('clients/{client}/payments/create', [ClientPaymentController::class, 'create'])->name('clients.payments.create');
         Route::post('clients/{client}/payments', [ClientPaymentController::class, 'store'])->name('clients.payments.store');

@@ -7,15 +7,26 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Enums\UserStatusEnum;
 use App\Http\Requests\Admin\UserRequest;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:list-User')->only(['index']);
+        $this->middleware('can:create-User')->only(['create', 'store']);
+        $this->middleware('can:view-User')->only(['show']);
+        $this->middleware('can:edit-User')->only(['edit', 'update']);
+        $this->middleware('can:delete-User')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = User::paginate(10);
+        $users = User::with('roles')->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -25,7 +36,9 @@ class UserController extends Controller
     public function create()
     {
         $userStatuses = UserStatusEnum::labels();
-        return view('admin.users.create', compact('userStatuses'));
+        $roles = Role::all();
+        $permissions = Permission::orderBy('group_name')->orderBy('display_name')->get()->groupBy('group_name');
+        return view('admin.users.create', compact('userStatuses', 'roles', 'permissions'));
     }
 
     /**
@@ -33,9 +46,17 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        User::create($request->validated());
-        session()->flash('success', 'User created successfully.');
-        return redirect()->route('admin.users.index');
+        $data = $request->validated();
+        $user = User::create($data);
+        $user->roles()->sync($request->roles);
+
+        if ($request->filled('permissions')) {
+            $permissions = Permission::whereIn('id', $request->permissions)->get();
+            $user->syncPermissions($permissions);
+        } else {
+            $user->syncPermissions([]);
+        }
+        return back()->with('success', 'User created successfully.');
     }
 
     /**
@@ -53,7 +74,10 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $userStatuses = UserStatusEnum::labels();
-        return view('admin.users.edit', compact('user', 'userStatuses'));
+        $roles = Role::all();
+        $permissions = Permission::orderBy('group_name')->orderBy('display_name')->get()->groupBy('group_name');
+        $userPermissions = $user->permissions->pluck('id')->toArray();
+        return view('admin.users.edit', compact('user', 'userStatuses', 'roles', 'permissions', 'userPermissions'));
     }
 
     /**
@@ -67,8 +91,16 @@ class UserController extends Controller
         }
         $user = User::findOrFail($id);
         $user->update($data);
-        session()->flash('success', 'User updated successfully.');
-        return redirect()->route('admin.users.index');
+        $user->roles()->sync($request->roles);
+
+        // Sync direct permissions (optional)
+        if ($request->filled('permissions')) {
+            $permissions = Permission::whereIn('id', $request->permissions)->get();
+            $user->syncPermissions($permissions);
+        } else {
+            $user->syncPermissions([]);
+        }
+        return back()->with('success', 'User updated successfully.');
     }
 
     /**
@@ -78,9 +110,6 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'User deleted successfully.'
-        ]);
+        return back()->with('success', 'User deleted successfully.');
     }
 }

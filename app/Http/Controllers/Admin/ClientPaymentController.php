@@ -9,6 +9,11 @@ use App\Services\ClientAccountService;
 
 class ClientPaymentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:edit-Client')->only(['create', 'store']);
+    }
+
     public function create(string $Id)
     {
         $client = Client::findOrFail($Id);

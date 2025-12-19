@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\DB;
 
 class WarehouseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:list-Warehouse')->only(['index']);
+        $this->middleware('can:create-Warehouse')->only(['create', 'store']);
+        $this->middleware('can:view-Warehouse')->only(['show']);
+        $this->middleware('can:edit-Warehouse')->only(['edit', 'update']);
+        $this->middleware('can:delete-Warehouse')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */

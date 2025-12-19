@@ -9,6 +9,11 @@ use App\Http\Requests\Admin\GeneralSettingsRequest;
 
 class GeneralSettingsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:manage-settings')->only(['view', 'update']);
+    }
+
     public function view(GeneralSettings $generalSettings)
     {
         return view('admin.settings.general')->with('generalSettings', $generalSettings);

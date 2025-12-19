@@ -1,5 +1,5 @@
-@extends('admin.layouts.app', [#
-    'pageName' => 'Categories',
+@extends('admin.layouts.app', [
+    'pageName' => 'Roles & Permissions',
 ])
 
 @section('content')
@@ -8,10 +8,10 @@
     <div class="col-sm-12">
         <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Categories List</h3>
+                <h3 class="card-title">Roles List</h3>
                 <div class="card-tools">
-                  <a href="{{ route('admin.categories.create') }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus"></i> Create
+                  <a href="{{ route('admin.roles.create') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus"></i> Create Role
                   </a>
                 </div>
               </div>
@@ -23,47 +23,42 @@
                     <tr>
                       <th style="width: 10px">#</th>
                       <th>Name</th>
-                      <th>Status</th>
-                      <th>Image</th>
-                      <th>Item Count</th>
+                      <th>Display Name</th>
+                      <th>Group</th>
+                      <th>Permissions Count</th>
+                      <th>Users Count</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                  @foreach ($categories as $category)
-                      
+                  @foreach ($roles as $role)
                     <tr>
                       <td>{{$loop->iteration}}</td>
-                      <td>{{ $category->name }}</td>
+                      <td><strong>{{ $role->name }}</strong></td>
+                      <td>{{ $role->display_name ?? '-' }}</td>
+                      <td>{{ $role->group_name ?? '-' }}</td>
                       <td>
-                      <span class="badge badge-{{ $category->status->style() }}">{{ $category->status->label() }}</span>
+                        <span class="badge badge-info">{{ $role->permissions_count }}</span>
                       </td>
                       <td>
-                        @if($category->photo)
-                            <img src="{{ Storage::url($category->photo->path) }}" 
-                                 alt="{{ $category->name }}" 
-                                 style="max-width: 50px; max-height: 50px; object-fit: cover">
-                        @else
-                            <span class="text-muted">No image</span>
-                        @endif
+                        <span class="badge badge-secondary">{{ $role->users()->count() }}</span>
                       </td>
-                      <td> {{ $category->items_count }}</td>
-                      <td> 
-                        {{-- Edit Button --}}
-                        <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-success btn-sm">
-                            <i class="fas fa-edit">  </i>
+                      <td>
+                        <a href="{{ route('admin.roles.edit', $role->id) }}" class="btn btn-success btn-sm" title="Edit">
+                            <i class="fas fa-edit"></i>
                         </a>
-                        {{-- Show Button --}}
-                        <a href="{{ route('admin.categories.show', $category->id) }}" class="btn btn-info btn-sm">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        {{-- Delete Button --}}
-                        <a href="#"
-                            data-url="{{ route('admin.categories.destroy', $category->id) }}"
-                            data-id="{{$category->id}}"
-                            class="btn btn-danger btn-sm delete-button">
+                        @if($role->users()->count() == 0)
+                          <a href="#"
+                            data-url="{{ route('admin.roles.destroy', $role->id) }}"
+                            data-id="{{$role->id}}"
+                            class="btn btn-danger btn-sm delete-button" title="Delete">
                             <i class="fas fa-trash"></i>
-                        </a>
+                          </a>
+                        @else
+                          <button type="button" class="btn btn-danger btn-sm" disabled title="Cannot delete - has assigned users">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        @endif
                       </td>
                     </tr>
                   @endforeach
@@ -71,10 +66,7 @@
                 </table>
               </div>
               <!-- /.card-body -->
-              <div class="card-footer clearfix">
-                {{ $categories->links() }}
-              </div>
-          </div>
+            </div>
             <!-- /.card -->
     </div>
 </div>
@@ -85,6 +77,7 @@
   <script>
         $('.delete-button').on('click', function (e) {
             e.preventDefault();
+            var deleteUrl = $(this).data('url');
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
@@ -96,7 +89,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: $(this).data('url'),
+                        url: deleteUrl,
                         type: 'POST',
                         data: {
                             _method: 'DELETE',
@@ -107,7 +100,10 @@
                             location.reload();
                         },
                         error: function (xhr) {
-                            Swal.fire("Error!", "An error occurred while deleting the Category.", "error");
+                            var message = xhr.responseJSON && xhr.responseJSON.message
+                                ? xhr.responseJSON.message
+                                : "An error occurred while deleting the role.";
+                            Swal.fire("Error!", message, "error");
                         }
                     });
                 }
@@ -115,3 +111,4 @@
         });
     </script>
 @endpush
+

@@ -16,6 +16,9 @@ class OrderController extends Controller
     public function __construct(OrderService $orderService)
     {
         $this->orderService = $orderService;
+        $this->middleware('can:list-Order')->only(['index']);
+        $this->middleware('can:view-Order')->only(['show']);
+        $this->middleware('can:edit-Order')->only(['updateStatus']);
     }
 
     /**

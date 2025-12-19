@@ -14,6 +14,15 @@ use App\Services\StockManageService;
 
 class ItemController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:list-Item')->only(['index']);
+        $this->middleware('can:create-Item')->only(['create', 'store']);
+        $this->middleware('can:view-Item')->only(['show']);
+        $this->middleware('can:edit-Item')->only(['edit', 'update']);
+        $this->middleware('can:delete-Item')->only(['destroy']);
+    }
     /**
      * Display a listing of the resource.
      */

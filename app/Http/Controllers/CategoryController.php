@@ -10,6 +10,15 @@ use App\Http\Requests\admin\CategoryRequest;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:list-Category')->only(['index']);
+        $this->middleware('can:create-Category')->only(['create', 'store']);
+        $this->middleware('can:view-Category')->only(['show']);
+        $this->middleware('can:edit-Category')->only(['edit', 'update']);
+        $this->middleware('can:delete-Category')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */

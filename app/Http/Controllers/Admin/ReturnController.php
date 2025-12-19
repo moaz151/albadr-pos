@@ -32,6 +32,16 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReturnController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:list-Return')->only(['index']);
+        $this->middleware('can:create-Return')->only(['create', 'store']);
+        $this->middleware('can:view-Return')->only(['show']);
+        $this->middleware('can:edit-Return')->only(['edit', 'update']);
+        $this->middleware('can:delete-Return')->only(['destroy']);
+        $this->middleware('can:print-Return')->only(['print']);
+    }
     public function index()
     {
         $returns = Sale::where('type', SaleTypeEnum::return->value)->paginate(10);

@@ -37,8 +37,10 @@ class SaleController extends Controller
     {
         $this->middleware('can:list-Sale')->only(['index']);
         $this->middleware('can:create-Sale')->only(['create', 'store']);
+        $this->middleware('can:view-Sale')->only(['show']);
         $this->middleware('can:edit-Sale')->only(['edit', 'update']);
         $this->middleware('can:delete-Sale')->only(['destroy']);
+        $this->middleware('can:print-Sale')->only(['print']);
     }
     public function index()
     {
@@ -78,7 +80,8 @@ class SaleController extends Controller
     public function show(string $id)
     {
         $sale = Sale::FindOrFail($id);
-        return view('admin.sales.show', compact('sale'));
+        $discountTypes = DiscountTypeEnum::labels();
+        return view('admin.sales.show', compact('sale', 'discountTypes'));
     }
 
 

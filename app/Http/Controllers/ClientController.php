@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:list-Client')->only(['index']);
+        $this->middleware('can:create-Client')->only(['create', 'store']);
+        $this->middleware('can:view-Client')->only(['show']);
+        $this->middleware('can:edit-Client')->only(['edit', 'update']);
+        $this->middleware('can:delete-Client')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */

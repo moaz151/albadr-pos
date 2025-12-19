@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Enums\UserStatusEnum;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class UsersSeeder extends Seeder
 {
@@ -13,18 +14,30 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
-        User::UpdateOrcreate(
-        [
-            'username' => 'admin',
-        ],
-        
-        [
-            'username' => 'admin',
-            'password' => bcrypt('123123'), // Make sure to hash the password
-            'full_name' => 'Administrator',
-            'status' => UserStatusEnum::active->value
-        ]);
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'admin', 'guard_name' => 'web'],
+            [
+                'group_name' => 'web',
+                'display_name' => 'Administrator',
+            ]
+        );
 
-        User::factory(50)->create();
+        $adminUser = User::updateOrCreate(
+            [
+                'username' => 'admin',
+            ],
+            [
+                'username' => 'admin',
+                'password' => bcrypt('123123'), // Make sure to hash the password
+                'full_name' => 'Administrator',
+                'status' => UserStatusEnum::active->value,
+            ]
+        );
+
+        if (! $adminUser->hasRole($adminRole->name)) {
+            $adminUser->assignRole($adminRole);
+        }
+
+        User::factory(5)->create();
     }
 }

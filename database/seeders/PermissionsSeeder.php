@@ -20,84 +20,9 @@ class PermissionsSeeder extends Seeder
             'display_name' => 'Administrator',
         ]);
 
-        // $this->manualCreatePermissions($role);
         $this->autoCreatePermissions($role);
 
         
-    }
-
-    private function manualCreatePermissions($role): void
-    {
-        $permissions = [
-            [
-                'name' =>'users-create',
-                'guard_name' => 'web',
-                'group_name' => 'User',
-                'display_name' => 'Create User',
-            ],
-            [
-                'name' =>'users-edit',
-                'guard_name' => 'web',
-                'group_name' => 'User',
-                'display_name' => 'Edit User',
-            ],
-            [
-                'name' =>'users-delete',
-                'guard_name' => 'web',
-                'group_name' => 'User',
-                'display_name' => 'Delete User',
-            ],
-            [
-                'name' =>'users-view',
-                'guard_name' => 'web',
-                'group_name' => 'User',
-                'display_name' => 'View User',
-            ],
-            [
-                'name' =>'users-list',
-                'guard_name' => 'web',
-                'group_name' => 'User',
-                'display_name' => 'List Users',
-            ],
-            [
-                'name' => 'items-create',
-                'guard_name' => 'web',
-                'group_name' => 'Item',
-                'display_name' => 'Create Item',
-            ],
-            [
-                'name' => 'items-edit',
-                'guard_name' => 'web',
-                'group_name' => 'Item',
-                'display_name' => 'Edit Item',
-            ],
-            [
-                'name' => 'items-delete',
-                'guard_name' => 'web',
-                'group_name' => 'Item',
-                'display_name' => 'Delete Item',
-            ],
-            [
-                'name' => 'items-view',
-                'guard_name' => 'web',
-                'group_name' => 'Item',
-                'display_name' => 'View Item',
-            ],
-            [
-                'name' => 'items-list',
-                'guard_name' => 'web',
-                'group_name' => 'Item',
-                'display_name' => 'List Items',
-            ],
-        ];
-
-        foreach ($permissions as $permission) {
-            $perm =  Permission::updateOrCreate(
-                ['name' => $permission['name'], 'guard_name' => $permission['guard_name']],
-                ['group_name' => $permission['group_name'], 'display_name' => $permission['display_name']]
-            );
-            $role->givePermissionTo($perm);
-        }
     }
 
     private function autoCreatePermissions($role): void
@@ -105,6 +30,9 @@ class PermissionsSeeder extends Seeder
         $modelFiles = Storage::disk('app')->files('Models');
         foreach ($modelFiles as $modelFile) {
             $model = str_replace(['.php', 'Models/'], '', $modelFile); // Sale.php => Sale
+            if ($model == 'File' || $model == 'Cart' || $model == 'CartItem' || $model == 'orderItem') {
+                continue;
+            }
             $crudActions = ['create', 'edit', 'delete', 'view', 'list'];
             foreach($crudActions as $action)
             {
@@ -118,6 +46,58 @@ class PermissionsSeeder extends Seeder
                 $role->givePermissionTo($permission);
             }
             
+        }
+
+        // Manually ensure permissions for non-model features (e.g., Roles management, Reports pages)
+        $extraPermissions = [
+            [
+                'name' => 'list-Role',
+                'group_name' => 'Role',
+                'display_name' => 'List Role',
+            ],
+            [
+                'name' => 'create-Role',
+                'group_name' => 'Role',
+                'display_name' => 'Create Role',
+            ],
+            [
+                'name' => 'edit-Role',
+                'group_name' => 'Role',
+                'display_name' => 'Edit Role',
+            ],
+            [
+                'name' => 'delete-Role',
+                'group_name' => 'Role',
+                'display_name' => 'Delete Role',
+            ],
+            [
+                'name' => 'view-Role',
+                'group_name' => 'Role',
+                'display_name' => 'View Role',
+            ],
+            [
+                'name' => 'list-Report',
+                'group_name' => 'Report',
+                'display_name' => 'List Report',
+            ],
+            [
+                'name' => 'view-reports',
+                'group_name' => 'Report',
+                'display_name' => 'View Reports',
+            ],
+            [
+                'name' => 'manage-settings',
+                'group_name' => 'Setting',
+                'display_name' => 'Manage Settings',
+            ],
+        ];
+
+        foreach ($extraPermissions as $permission) {
+            $perm = Permission::updateOrCreate(
+                ['name' => $permission['name'], 'guard_name' => 'web'],
+                ['group_name' => $permission['group_name'], 'display_name' => $permission['display_name']]
+            );
+            $role->givePermissionTo($perm);
         }
     }
 }
