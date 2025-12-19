@@ -10,11 +10,12 @@ use Illuminate\Notifications\Notifiable;
 use App\Enums\SaleTypeEnum;
 use App\Enums\UserStatusEnum;
 use App\Models\Sale;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.

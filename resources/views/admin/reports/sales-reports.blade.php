@@ -1,4 +1,4 @@
-@extends('admin.layouts.app', [
+{{-- @extends('admin.layouts.app', [
     'pageName' => __('trans.sales_reports') ?? 'Sales Reports',
 ])
 
@@ -187,4 +187,4 @@
     </div>
 </div>
 @endsection
-
+ --}}

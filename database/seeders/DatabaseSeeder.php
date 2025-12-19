@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             ItemsSeeder::class,
             SafesSeeder::class,
             OrdersSeeder::class,
+            PermissionsSeeder::class,
         ]);
     }
 }
