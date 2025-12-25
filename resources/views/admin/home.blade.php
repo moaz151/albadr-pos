@@ -4,6 +4,69 @@
 
 @section('content')
 
+@if(isset($lowStockItems) && $lowStockItems->count() > 0)
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <h4 class="alert-heading">
+                <i class="fas fa-exclamation-triangle"></i> {{ __('trans.low_stock_warning') ?? 'Low Stock Warning' }}
+            </h4>
+            <p class="mb-2">{{ __('trans.low_stock_message') ?? 'The following items have reached or fallen below their minimum stock level:' }}</p>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ __('trans.item_code') }}</th>
+                            <th>{{ __('trans.item_name') }}</th>
+                            <th>{{ __('trans.current_stock') ?? 'Current Stock' }}</th>
+                            <th>{{ __('trans.minimum_stock') ?? 'Minimum Stock' }}</th>
+                            <th>{{ __('trans.status') }}</th>
+                            <th>{{ __('trans.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($lowStockItems as $data)
+                            @php
+                                $item = $data['item'];
+                                $totalStock = $data['total_stock'];
+                                $minimumStock = $data['minimum_stock'];
+                                $isCritical = $totalStock == 0;
+                            @endphp
+                            <tr class="{{ $isCritical ? 'table-danger' : 'table-warning' }}">
+                                <td>{{ $item->item_code ?? '-' }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>
+                                    <strong class="{{ $isCritical ? 'text-danger' : 'text-warning' }}">
+                                        {{ number_format($totalStock, 2) }}
+                                    </strong>
+                                </td>
+                                <td>{{ number_format($minimumStock, 2) }}</td>
+                                <td>
+                                    @if($isCritical)
+                                        <span class="badge badge-danger">{{ __('trans.out_of_stock') ?? 'Out of Stock' }}</span>
+                                    @else
+                                        <span class="badge badge-warning">{{ __('trans.low_stock') ?? 'Low Stock' }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.items.edit', $item->id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> {{ __('trans.edit') }}
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+@endif
+
 <div class="row">
     {{-- Quick navigation cards --}}
     @can('list-Order')

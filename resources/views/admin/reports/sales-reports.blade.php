@@ -101,8 +101,11 @@
                         <i class="fas fa-file-excel"></i> @lang('trans.export_excel')
                     </a>
                     <a href="{{ route('admin.reports.sales-reports.pdf', request()->query()) }}" 
-                       class="btn btn-secondary mb-2">
+                       class="btn btn-secondary mr-2 mb-2">
                         <i class="fas fa-file-pdf"></i> @lang('trans.export_pdf')
+                    </a>
+                    <a href="{{ route('admin.reports.sales-reports') }}" class="btn btn-secondary mr-2 mb-2">
+                        <i class="fas fa-redo"></i> @lang('trans.reset')
                     </a>
                 </div>
 

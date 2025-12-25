@@ -69,4 +69,9 @@ class Item extends Model
         return $this->morphOne('App\Models\File', 'fileable')->where('usage', 'item_photo');
     }
 
+    public function warehouseItems()
+    {
+        return $this->morphedByMany('App\Models\Warehouse', 'itemable')->withPivot('quantity');
+    }
+
 }

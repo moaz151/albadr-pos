@@ -8,7 +8,7 @@
   <div class="col-sm-12">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Unit Edit</h3>
+        <h3 class="card-title">Update Item</h3>
       </div>
       <!-- /.card-header -->
       <div class="card-body">
@@ -38,10 +38,10 @@
           <input class="form-control" id="item_code" value= "{{ old('item_code', $item->item_code) }}" name="item_code">
         </div>
         {{-- Quantity input  --}}
-        <div class="form-group">
+        {{-- <div class="form-group">
           <label for="quantity">Quantity</label>
           <input class="form-control" id="quantity" value= "{{ old('quantity', $item->quantity) }}" name="quantity">
-        </div>
+        </div> --}}
         {{-- Price input  --}}
         <div class="form-group">
           <label for="price">Price</label>

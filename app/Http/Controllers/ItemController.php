@@ -96,7 +96,7 @@ class ItemController extends Controller
      */
     public function edit(string $id)
     {
-        $item = Item::findOrFail($id);
+        $item = Item::with('warehouseItems')->findOrFail($id);
         $categories = Category::all();
         $units = Unit::all();
         $ItemStatus = ItemStatusEnum::labels();
